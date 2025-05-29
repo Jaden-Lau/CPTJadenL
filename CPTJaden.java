@@ -9,7 +9,6 @@ public class CPTJaden {
     public static void displayMainMenu(Console con) {
         boolean blnExit = false;
 
-        // Store player names and win counts
         String strP1 = "";
         String strP2 = "";
         int intP1Wins = 0;
@@ -27,7 +26,6 @@ public class CPTJaden {
             String strChoice = con.readLine().toLowerCase();
 
             if (strChoice.equals("p")) {
-                // Ask for player names if not yet set
                 if (strP1.equals("") || strP2.equals("")) {
                     con.print("Enter Player 1 name: ");
                     strP1 = con.readLine();
