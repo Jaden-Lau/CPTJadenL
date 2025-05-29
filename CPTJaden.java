@@ -1,8 +1,11 @@
 import arc.*;
+import java.awt.Color;
+import java.awt.image.BufferedImage;
 
 public class CPTJaden {
     public static void main(String[] args) {
-        Console con = new Console();
+        Console con = new Console(700,700);
+        con.setBackgroundColor(new Color(70, 30, 70));
         displayMainMenu(con);
     }
 
@@ -16,13 +19,13 @@ public class CPTJaden {
 
         while (!blnExit) {
             con.clear();
-            con.println("=== CONNECT 4 ===");
-            con.println("(P)lay Game");
-            con.println("(V)iew Leaderboard");
-            con.println("(C)hoose Theme");
-            con.println("(T)heme Creator");
-            con.println("(Q)uit");
-            con.print("Choose an option: ");
+            printCentered(con, "=== CONNECT 4 ===");
+			printCentered(con, "(P)lay Game");
+			printCentered(con, "(V)iew Leaderboard");
+			printCentered(con, "(C)hoose Theme");
+			printCentered(con, "(T)heme Creator");
+			printCentered(con, "(Q)uit");
+            con.print("\nChoose an option: ");
             String strChoice = con.readLine().toLowerCase();
 
             if (strChoice.equals("p")) {
@@ -43,9 +46,12 @@ public class CPTJaden {
 						intP2Wins++;
 					}
 					
-					con.print("\nDo you want to play again? (y/n): ");
+					con.print("\n\n\n\n\n\n\n\n\n\n\n\n\nDo you want to play again? (y/n): ");
 					String strResponse = con.readLine().toLowerCase();
 					blnPlayAgain = strResponse.equals("y");
+					if (!blnPlayAgain) {
+						con.clear();
+					}
 				}
             } else if (strChoice.equals("v")) {
                     viewLeaderboard(con, strP1Name, intP1Wins, strP2Name, intP2Wins);
@@ -73,7 +79,7 @@ public class CPTJaden {
         while (true) {
             drawBoard(con, intBoard, strP1, strP2, intP1Wins, intP2Wins);
             con.println();
-            con.print((intCurrentPlayer == 1 ? strP1 : strP2) + " (" + (intCurrentPlayer == 1 ? "Red" : "Yellow") + "), choose column (1-7): ");
+            con.print("\n\n" + (intCurrentPlayer == 1 ? strP1 : strP2) + " (" + (intCurrentPlayer == 1 ? "Red" : "Yellow") + "), choose column (1-7): ");
             int intCol = con.readInt() - 1;
 
             if (intCol < 0 || intCol > 6) {
@@ -90,7 +96,7 @@ public class CPTJaden {
             if (checkWin(intBoard, intCurrentPlayer)) {
                 drawBoard(con, intBoard, strP1, strP2, intP1Wins, intP2Wins);
                 con.println();
-                con.println((intCurrentPlayer == 1 ? strP1 : strP2) + " wins!");
+                con.println("\n\n" + (intCurrentPlayer == 1 ? strP1 : strP2) + " wins!");
                 return intCurrentPlayer;
             }
 
@@ -115,18 +121,27 @@ public class CPTJaden {
             con.print(" " + intCol + " ");
         }
         con.println();
+        BufferedImage img = con.loadImage("Connect 4 Board.png");
+		int intimgX = (700 - img.getWidth()) / 2;
+		int intimgY = (700 - img.getHeight()) / 4;
+		con.drawImage(img, intimgX, intimgY);
+		int intdiscSize = 60;
+		int intgap = 8;
+		int intstartX = intimgX + 8;
+		int intstartY = intimgY + 15;
 
-        for (int intRow = 0; intRow < 6; intRow++) {
-            for (int intCol = 0; intCol < 7; intCol++) {
-                if (intBoard[intRow][intCol] == 0) {
-                    con.print("[ ]");
-                } else if (intBoard[intRow][intCol] == 1) {
-                    con.print("[R]");
-                } else {
-                    con.print("[Y]");
-                }
+		for (int intRow = 0; intRow < 6; intRow++) {
+			for (int intCol = 0; intCol < 7; intCol++) {
+				int intx = intstartX + intCol * (intdiscSize + intgap);
+				int inty = intstartY + intRow * (intdiscSize + intgap); 
+				if (intBoard[intRow][intCol] == 1) {
+					con.setDrawColor(Color.RED);
+					con.fillOval(intx, inty, intdiscSize, intdiscSize);
+				} else if (intBoard[intRow][intCol] == 2) {
+					con.setDrawColor(Color.YELLOW);
+					con.fillOval(intx, inty, intdiscSize, intdiscSize);
+				}
             }
-            con.println();
         }
     }
 
@@ -185,7 +200,6 @@ public class CPTJaden {
 		String[][] strLeaderboard = new String[100][2];
 		int intCount = 0;
 
-		// Write actual player names and wins to leaderboard.txt
 		TextOutputFile leaderBoardOut = new TextOutputFile("leaderboard.txt");
 		leaderBoardOut.println(strP1);
 		leaderBoardOut.println(Integer.toString(intP1Wins));
@@ -193,7 +207,6 @@ public class CPTJaden {
 		leaderBoardOut.println(Integer.toString(intP2Wins));
 		leaderBoardOut.close();
 
-		// Open file for reading
 		TextInputFile leaderBoard = new TextInputFile("leaderboard.txt");
 		while (!leaderBoard.eof() && intCount < strLeaderboard.length) {
 			strLeaderboard[intCount][0] = leaderBoard.readLine();
@@ -202,7 +215,7 @@ public class CPTJaden {
 		}
 		leaderBoard.close();
 
-		// Sort leaderboard descending by wins
+		// Sort
 		for (int i = 0; i < intCount - 1; i++) {
 			for (int j = 0; j < intCount - i - 1; j++) {
 				int intWins1 = Integer.parseInt(strLeaderboard[j][1]);
@@ -218,7 +231,6 @@ public class CPTJaden {
 			}
 		}
 
-		// Display leaderboard
 		con.clear();
 		con.println("LEADERBOARD");
 		con.println("------------");
@@ -228,5 +240,16 @@ public class CPTJaden {
 		con.println();
 		con.println("Press Enter to return to menu.");
 		con.readLine();
+	}
+	
+	public static void printCentered(Console con, String text) {
+		int consoleWidth = 700;
+		int charWidth = 12;
+		int textWidth = text.length() * charWidth;
+		int spaces = (consoleWidth - textWidth) / (2 * charWidth);
+		for (int i = 0; i < spaces; i++) {
+			con.print(" ");
+		}
+		con.println(text);
 	}
 }
