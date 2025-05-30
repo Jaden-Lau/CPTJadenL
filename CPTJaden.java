@@ -122,9 +122,7 @@ public class CPTJaden {
 
 		con.setDrawColor(Color.WHITE);
         con.println(strP1 + " (Red): " + intP1Wins + " wins " + " - Connect 4 - " + strP2 + " (Yellow): " + intP2Wins + " wins");
-        for (int intCol = 1; intCol <= 7; intCol++) {
-            con.print("      " + intCol);
-        }
+		
         con.println();
         BufferedImage img = con.loadImage("Connect 4 Board.png");
 		int intimgX = (700 - img.getWidth()) / 2;
@@ -134,6 +132,12 @@ public class CPTJaden {
 		int intgap = 8;
 		int intstartX = intimgX + 8;
 		int intstartY = intimgY + 15;
+
+		for (int intCol = 0; intCol < 7; intCol++) {
+			int intx = intimgX + 8 + intCol * (intdiscSize + intgap) + intdiscSize / 2 - 5;
+			int inty = intimgY - 10;
+			con.drawString(String.valueOf(intCol + 1), intx, inty);
+		}
 
 		for (int intRow = 0; intRow < 6; intRow++) {
 			for (int intCol = 0; intCol < 7; intCol++) {
