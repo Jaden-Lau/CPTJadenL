@@ -19,6 +19,7 @@ public class CPTJaden {
 
         while (!blnExit) {
             con.clear();
+            
             printCentered(con, "=== CONNECT 4 ===");
 			printCentered(con, "(P)lay Game");
 			printCentered(con, "(V)iew Leaderboard");
@@ -46,12 +47,12 @@ public class CPTJaden {
 						intP2Wins++;
 					}
 					
-					con.print("\n\n\n\n\n\n\n\n\n\n\n\n\nDo you want to play again? (y/n): ");
+					con.print("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nDo you want to play again? (y/n): ");
 					String strResponse = con.readLine().toLowerCase();
 					blnPlayAgain = strResponse.equals("y");
-					if (!blnPlayAgain) {
-						con.clear();
-					}
+					con.clear();
+					con.setDrawColor(new Color(70, 30, 70));
+					con.fillRect(0, 0, 700, 700);
 				}
             } else if (strChoice.equals("v")) {
                     viewLeaderboard(con, strP1Name, intP1Wins, strP2Name, intP2Wins);
@@ -79,7 +80,7 @@ public class CPTJaden {
         while (true) {
             drawBoard(con, intBoard, strP1, strP2, intP1Wins, intP2Wins);
             con.println();
-            con.print("\n\n" + (intCurrentPlayer == 1 ? strP1 : strP2) + " (" + (intCurrentPlayer == 1 ? "Red" : "Yellow") + "), choose column (1-7): ");
+            con.print("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n" + (intCurrentPlayer == 1 ? strP1 : strP2) + " (" + (intCurrentPlayer == 1 ? "Red" : "Yellow") + "), choose column (1-7): ");
             int intCol = con.readInt() - 1;
 
             if (intCol < 0 || intCol > 6) {
@@ -96,7 +97,7 @@ public class CPTJaden {
             if (checkWin(intBoard, intCurrentPlayer)) {
                 drawBoard(con, intBoard, strP1, strP2, intP1Wins, intP2Wins);
                 con.println();
-                con.println("\n\n" + (intCurrentPlayer == 1 ? strP1 : strP2) + " wins!");
+                con.println((intCurrentPlayer == 1 ? strP1 : strP2) + " wins!");
                 return intCurrentPlayer;
             }
 
@@ -115,10 +116,14 @@ public class CPTJaden {
     }
 
     public static void drawBoard(Console con, int[][] intBoard, String strP1, String strP2, int intP1Wins, int intP2Wins) {
-        con.clear();
+		con.clear();
+        con.setDrawColor(new Color(70, 30, 70));
+		con.fillRect(0, 0, 700, 700);
+
+		con.setDrawColor(Color.WHITE);
         con.println(strP1 + " (Red): " + intP1Wins + " wins " + " - Connect 4 - " + strP2 + " (Yellow): " + intP2Wins + " wins");
         for (int intCol = 1; intCol <= 7; intCol++) {
-            con.print(" " + intCol + " ");
+            con.print("      " + intCol);
         }
         con.println();
         BufferedImage img = con.loadImage("Connect 4 Board.png");
