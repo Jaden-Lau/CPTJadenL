@@ -19,8 +19,13 @@ public class CPTJaden {
 
         while (!blnExit) {
             con.clear();
-            
-            printCentered(con, "=== CONNECT 4 ===");
+            BufferedImage logo = con.loadImage("Connect 4 Logo.png");
+			int intlogoX = (700 - logo.getWidth()) / 2;
+			int intlogoY = 20;
+			con.drawImage(logo, intlogoX, intlogoY);
+			
+			con.println("\n\n\n\n\n\n\n\n");
+			
 			printCentered(con, "(P)lay Game");
 			printCentered(con, "(V)iew Leaderboard");
 			printCentered(con, "(C)hoose Theme");
@@ -36,7 +41,8 @@ public class CPTJaden {
                     con.print("Enter Player 2 name: ");
                     strP2Name = con.readLine();
                 }
-                
+                con.setDrawColor(new Color(70, 30, 70));
+				con.fillRect(0, 0, 700, 700);
                 boolean blnPlayAgain = true;
                 while (blnPlayAgain) {
 					int intWinner = playGame(con, strP1Name, strP2Name, intP1Wins, intP2Wins);
@@ -55,11 +61,17 @@ public class CPTJaden {
 					con.fillRect(0, 0, 700, 700);
 				}
             } else if (strChoice.equals("v")) {
+					con.setDrawColor(new Color(70, 30, 70));
+					con.fillRect(0, 0, 700, 700);
                     viewLeaderboard(con, strP1Name, intP1Wins, strP2Name, intP2Wins);
             } else if (strChoice.equals("c")) {
+				con.setDrawColor(new Color(70, 30, 70));
+				con.fillRect(0, 0, 700, 700);
                 con.println("Choose Theme feature not implemented yet.");
                 con.readLine();
             } else if (strChoice.equals("t")) {
+				con.setDrawColor(new Color(70, 30, 70));
+				con.fillRect(0, 0, 700, 700);
                 con.println("Theme Creator feature not implemented yet.");
                 con.readLine();
             } else if (strChoice.equals("q")) {
