@@ -2,6 +2,7 @@ import arc.*;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.awt.Font;
+import java.awt.FontMetrics;
 
 public class CPTJaden {
     public static void main(String[] args) {
@@ -64,37 +65,39 @@ public class CPTJaden {
                     con.print("Enter Player 2 name: ");
                     strP2Name = con.readLine();
                 }
-                con.setDrawColor(new Color(70, 30, 70));
-				con.fillRect(0, 0, 700, 700);
+                con.setDrawColor(new Color(112, 58, 255));
+				con.fillRect(0, 0, 1280, 720);
                 boolean blnPlayAgain = true;
-                while (blnPlayAgain) {
+                while(blnPlayAgain) {
 					int intWinner = playGame(con, strP1Name, strP2Name, intP1Wins, intP2Wins);
-
 					if (intWinner == 1) {
 						intP1Wins++;
+						blnPlayAgain = false;
 					} else if (intWinner == 2) {
 						intP2Wins++;
+						blnPlayAgain = false;
+					} else if (intWinner == 3) {
+						continue;
+					} else {
+						blnPlayAgain = false;
 					}
 					
-					con.print("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nDo you want to play again? (y/n): ");
-					String strResponse = con.readLine().toLowerCase();
-					blnPlayAgain = strResponse.equals("y");
 					con.clear();
-					con.setDrawColor(new Color(70, 30, 70));
-					con.fillRect(0, 0, 700, 700);
+					con.setDrawColor(new Color(112, 58, 255));
+					con.fillRect(0, 0, 1280, 720);
 				}
             } else if (strChoice.equals("v")) {
-					con.setDrawColor(new Color(70, 30, 70));
-					con.fillRect(0, 0, 700, 700);
-                    viewLeaderboard(con, strP1Name, intP1Wins, strP2Name, intP2Wins);
+				con.setDrawColor(new Color(112, 58, 255));
+				con.fillRect(0, 0, 1280, 720);
+				viewLeaderboard(con, strP1Name, intP1Wins, strP2Name, intP2Wins);
             } else if (strChoice.equals("c")) {
-				con.setDrawColor(new Color(70, 30, 70));
-				con.fillRect(0, 0, 700, 700);
+				con.setDrawColor(new Color(112, 58, 255));
+				con.fillRect(0, 0, 1280, 720);
                 con.println("Choose Theme feature not implemented yet.");
                 con.readLine();
             } else if (strChoice.equals("t")) {
-				con.setDrawColor(new Color(70, 30, 70));
-				con.fillRect(0, 0, 700, 700);
+				con.setDrawColor(new Color(112, 58, 255));
+				con.fillRect(0, 0, 1280, 720);
                 con.println("Theme Creator feature not implemented yet.");
                 con.readLine();
             } else if (strChoice.equals("q")) {
@@ -129,28 +132,33 @@ public class CPTJaden {
         while (true) {
             drawBoard(con, intBoard, strP1, strP2, intP1Wins, intP2Wins);
             con.println();
-            con.print("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n" + (intCurrentPlayer == 1 ? strP1 : strP2) + " (" + (intCurrentPlayer == 1 ? "Red" : "Yellow") + "), choose column (1-7): ");
+            con.print("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n" + (intCurrentPlayer == 1 ? strP1 : strP2) + " (" + (intCurrentPlayer == 1 ? "Red" : "Yellow") + "), choose column (1-7): ");
             int intCol = con.readInt() - 1;
 
             if (intCol < 0 || intCol > 6) {
-                con.println("Invalid column. Try again.");
                 continue;
             }
 
             boolean blnPlaced = dropPiece(intBoard, intCol, intCurrentPlayer);
             if (!blnPlaced) {
-                con.println("That column is full. Try another one.");
                 continue;
             }
 
             if (checkWin(intBoard, intCurrentPlayer)) {
                 drawBoard(con, intBoard, strP1, strP2, intP1Wins, intP2Wins);
-                con.println();
-                con.println((intCurrentPlayer == 1 ? strP1 : strP2) + " wins!");
-                return intCurrentPlayer;
+				con.setDrawColor(Color.WHITE);
+				con.setDrawFont(con.loadFont("ArialNarrow7-9YJ9n.ttf", 32));
+				printCentered(con, (intCurrentPlayer == 1 ? strP1 : strP2) + " WINS!");
+				printCentered(con, "Do you want to play again? (y/n): ");
+				String strResponse = con.readLine().toLowerCase();
+				if (strResponse.equals("y")) {
+					return 3;
+				}
+				return intCurrentPlayer;
             }
 
             intCurrentPlayer = (intCurrentPlayer == 1) ? 2 : 1;
+
         }
     }
 
@@ -172,24 +180,59 @@ public class CPTJaden {
 		con.fillRect(0, 0, 1280, 620);
 		con.setDrawColor(yellow);
 		con.fillRect(0, 620, 1280, 100);
+		
+		con.setDrawColor(Color.WHITE);
+		printCentered(con, " - Connect 4 - ");
+		
+		Font scoreFont = con.loadFont("ArialNarrow7-9YJ9n.ttf", 22);
+		Font nameFont = con.loadFont("ArialNarrow7-9YJ9n.ttf", 18);
+		
+		int intboxX = 80;
+		int intboxY = 250;
+		int intboxWidth = 120;
+		int intboxHeight = 120;
+		int intboxX2 = 1280 - intboxWidth - 80;
 
 		con.setDrawColor(Color.WHITE);
-        con.println(strP1 + " (Red): " + intP1Wins + " wins " + " - Connect 4 - " + strP2 + " (Yellow): " + intP2Wins + " wins");
+		con.fillRoundRect(intboxX, intboxY, intboxWidth, intboxHeight, 20, 20);
+		con.setDrawColor(Color.BLACK);
+		con.drawRoundRect(intboxX, intboxY, intboxWidth, intboxHeight, 20, 20);
+		con.setDrawFont(nameFont);
+		drawCenteredString(con, strP1.toUpperCase(), intboxX, intboxY, intboxWidth, intboxY + 30, nameFont, Color.BLACK);
+		con.setDrawFont(scoreFont);
+		drawCenteredString(con, String.valueOf(intP1Wins), intboxX, intboxY, intboxWidth, intboxY + 75, scoreFont, Color.BLACK);
+
+		con.setDrawColor(Color.WHITE);
+		con.fillRoundRect(intboxX2, intboxY, intboxWidth, intboxHeight, 20, 20);
+		con.setDrawColor(Color.BLACK);
+		con.drawRoundRect(intboxX2, intboxY, intboxWidth, intboxHeight, 20, 20);
+		con.setDrawFont(nameFont);
+		drawCenteredString(con, strP2.toUpperCase(), intboxX2, intboxY, intboxWidth, intboxY + 30, nameFont, Color.BLACK);
+		con.setDrawFont(scoreFont);
+		drawCenteredString(con, String.valueOf(intP2Wins), intboxX2, intboxY, intboxWidth, intboxY + 75, scoreFont, Color.BLACK);
 		
         con.println();
         BufferedImage img = con.loadImage("Connect 4 Board.png");
-		int intimgX = (700 - img.getWidth()) / 2;
-		int intimgY = (700 - img.getHeight()) / 4;
+		int intimgX = (1280 - img.getWidth()) / 2;
+		int intimgY = 130;
 		con.drawImage(img, intimgX, intimgY);
 		int intdiscSize = 60;
-		int intgap = 8;
-		int intstartX = intimgX + 8;
+		int intgap = 10;
+		int intstartX = intimgX + 10;
 		int intstartY = intimgY + 15;
 
+		Font numberFont = con.loadFont("ArialNarrow7-9YJ9n.ttf", 22);
+		con.setDrawFont(numberFont);
+		FontMetrics fm = con.getDrawFontMetrics();
+
 		for (int intCol = 0; intCol < 7; intCol++) {
-			int intx = intimgX + 8 + intCol * (intdiscSize + intgap) + intdiscSize / 2 - 5;
-			int inty = intimgY - 10;
-			con.drawString(String.valueOf(intCol + 1), intx, inty);
+			String strcolNumber = String.valueOf(intCol + 1);
+			int inttextWidth = fm.stringWidth(strcolNumber);
+			int intcenterX = intimgX + intCol * (intdiscSize + intgap) + intdiscSize / 2;
+			int inttextX = intcenterX+6 - inttextWidth / 2;
+			int inttextY = intimgY - 20;
+			con.setDrawColor(Color.WHITE);
+			con.drawString(strcolNumber, inttextX, inttextY);
 		}
 
 		for (int intRow = 0; intRow < 6; intRow++) {
@@ -198,10 +241,10 @@ public class CPTJaden {
 				int inty = intstartY + intRow * (intdiscSize + intgap); 
 				if (intBoard[intRow][intCol] == 1) {
 					con.setDrawColor(Color.RED);
-					con.fillOval(intx, inty, intdiscSize, intdiscSize);
+					con.fillOval(intx-5, inty-5, intdiscSize, intdiscSize);
 				} else if (intBoard[intRow][intCol] == 2) {
 					con.setDrawColor(Color.YELLOW);
-					con.fillOval(intx, inty, intdiscSize, intdiscSize);
+					con.fillOval(intx-5, inty-5, intdiscSize, intdiscSize);
 				}
             }
         }
@@ -304,14 +347,22 @@ public class CPTJaden {
 		con.readLine();
 	}
 	
-	public static void printCentered(Console con, String text) {
-		int consoleWidth = 700;
-		int charWidth = 12;
-		int textWidth = text.length() * charWidth;
-		int spaces = (consoleWidth - textWidth) / (2 * charWidth);
-		for (int i = 0; i < spaces; i++) {
+	public static void drawCenteredString(Console con, String strText, int intboxX, int intboxY, int intboxWidth, int intyPosition, Font font, Color color) {
+		con.setDrawFont(font);
+		FontMetrics fm = con.getDrawFontMetrics();
+		int inttextWidth = fm.stringWidth(strText);
+		int inttextX = intboxX + (intboxWidth - inttextWidth) / 2;
+		con.setDrawColor(color);
+		con.drawString(strText, inttextX, intyPosition);
+	}
+	public static void printCentered(Console con, String strtext) {
+		int intconsoleWidth = 1280;
+		int intcharWidth = 12;
+		int inttextWidth = strtext.length() * intcharWidth;
+		int intspaces = (intconsoleWidth - inttextWidth) / (2 * intcharWidth);
+		for (int i = 0; i < intspaces; i++) {
 			con.print(" ");
 		}
-		con.println(text);
+		con.println(strtext);
 	}
 }
