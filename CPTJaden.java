@@ -1,11 +1,12 @@
 import arc.*;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
+import java.awt.Font;
 
 public class CPTJaden {
     public static void main(String[] args) {
-        Console con = new Console(700,700);
-        con.setBackgroundColor(new Color(70, 30, 70));
+        Console con = new Console("Connect 4", 1280,720);
+        con.setBackgroundColor(new Color(112, 58, 255));
         displayMainMenu(con);
     }
 
@@ -19,18 +20,40 @@ public class CPTJaden {
 
         while (!blnExit) {
             con.clear();
+            
+            int intcardX = 390;
+			int intcardY = 90;
+			int intcardWidth = 500;
+			int intcardHeight = 540;
+			int intcenterX = intcardX + intcardWidth / 2;
+			int intbuttonWidth = 400;
+			int intbuttonHeight = 60;
+			int intstartY = intcardY + 140;
+			int intspacingY = 80;
+
+			con.setDrawColor(new Color(146, 82, 255));
+			con.fillRoundRect(intcardX, intcardY, intcardWidth, intcardHeight, 40, 40);
+
+			con.setDrawColor(Color.BLACK);
+			con.drawRoundRect(intcardX, intcardY, intcardWidth, intcardHeight, 40, 40);
+            
             BufferedImage logo = con.loadImage("Connect 4 Logo.png");
-			int intlogoX = (700 - logo.getWidth()) / 2;
+			int intlogoX = (logo.getWidth()) / 2;
 			int intlogoY = 20;
 			con.drawImage(logo, intlogoX, intlogoY);
+					
+			String[] strlabels = {
+				"(P)lay Game",
+				"(V)iew Leaderboard",
+				"(C)hoose Theme",
+				"(T)heme Creator",
+				"(Q)uit"
+			};
 			
-			con.println("\n\n\n\n\n\n\n\n");
+			for (int i = 0; i < strlabels.length; i++) {
+				drawButton(con, strlabels[i], intcenterX, intstartY + (i * intspacingY), intbuttonWidth, intbuttonHeight, Color.WHITE);
+			}
 			
-			printCentered(con, "(P)lay Game");
-			printCentered(con, "(V)iew Leaderboard");
-			printCentered(con, "(C)hoose Theme");
-			printCentered(con, "(T)heme Creator");
-			printCentered(con, "(Q)uit");
             con.print("\nChoose an option: ");
             String strChoice = con.readLine().toLowerCase();
 
@@ -84,6 +107,20 @@ public class CPTJaden {
 
         con.println("Thanks for playing!");
     }
+    
+    public static void drawButton(Console con, String strLabel, int intcenterX, int inty, int intwidth, int intheight, Color fillColor) {
+		int intx = intcenterX - intwidth / 2;
+		con.setDrawColor(Color.BLACK);
+		con.fillRoundRect(intx + 6, inty + 6, intwidth, intheight, 20, 20);
+		con.setDrawColor(fillColor);
+		con.fillRoundRect(intx, inty, intwidth, intheight, 20, 20);
+		con.setDrawColor(Color.BLACK);
+		con.drawRoundRect(intx, inty, intwidth, intheight, 20, 20);
+		con.setDrawColor(Color.BLACK);
+		Font fntOptTitle = con.loadFont("ArialNarrow7-9YJ9n.ttf", 24);
+		con.setDrawFont(fntOptTitle);
+		con.drawString(strLabel, intx + 20, inty + 12);
+	}
 
     public static int playGame(Console con, String strP1, String strP2, int intP1Wins, int intP2Wins) {
         int[][] intBoard = new int[6][7];
@@ -129,8 +166,12 @@ public class CPTJaden {
 
     public static void drawBoard(Console con, int[][] intBoard, String strP1, String strP2, int intP1Wins, int intP2Wins) {
 		con.clear();
-        con.setDrawColor(new Color(70, 30, 70));
-		con.fillRect(0, 0, 700, 700);
+        Color purple = new Color(112, 58, 255);
+		Color yellow = new Color(255, 214, 100);
+		con.setDrawColor(purple);
+		con.fillRect(0, 0, 1280, 620);
+		con.setDrawColor(yellow);
+		con.fillRect(0, 620, 1280, 100);
 
 		con.setDrawColor(Color.WHITE);
         con.println(strP1 + " (Red): " + intP1Wins + " wins " + " - Connect 4 - " + strP2 + " (Yellow): " + intP2Wins + " wins");
