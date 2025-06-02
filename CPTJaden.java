@@ -72,19 +72,16 @@ public class CPTJaden {
 					int intWinner = playGame(con, strP1Name, strP2Name, intP1Wins, intP2Wins);
 					if (intWinner == 1) {
 						intP1Wins++;
-						blnPlayAgain = false;
 					} else if (intWinner == 2) {
 						intP2Wins++;
-						blnPlayAgain = false;
-					} else if (intWinner == 3) {
-						continue;
-					} else {
-						blnPlayAgain = false;
 					}
 					
 					con.clear();
 					con.setDrawColor(new Color(112, 58, 255));
 					con.fillRect(0, 0, 1280, 720);
+					printCentered(con, "Do you want to play again? (y/n): ");
+					String strResponse = con.readLine().toLowerCase();
+					blnPlayAgain = strResponse.equals("y");
 				}
             } else if (strChoice.equals("v")) {
 				con.setDrawColor(new Color(112, 58, 255));
@@ -146,14 +143,7 @@ public class CPTJaden {
 
             if (checkWin(intBoard, intCurrentPlayer)) {
                 drawBoard(con, intBoard, strP1, strP2, intP1Wins, intP2Wins);
-				con.setDrawColor(Color.WHITE);
-				con.setDrawFont(con.loadFont("ArialNarrow7-9YJ9n.ttf", 32));
-				printCentered(con, (intCurrentPlayer == 1 ? strP1 : strP2) + " WINS!");
-				printCentered(con, "Do you want to play again? (y/n): ");
-				String strResponse = con.readLine().toLowerCase();
-				if (strResponse.equals("y")) {
-					return 3;
-				}
+                printCentered(con, (intCurrentPlayer == 1 ? strP1 : strP2) + " WINS!");
 				return intCurrentPlayer;
             }
 
@@ -365,4 +355,5 @@ public class CPTJaden {
 		}
 		con.println(strtext);
 	}
+	
 }
