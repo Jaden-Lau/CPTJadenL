@@ -96,6 +96,8 @@ public class CPTJaden {
 				String[] strThemeFiles = {
 					"classic.txt",
 					"christmas.txt",
+					"vintage.txt",
+					"galactic.txt",
 				};
 
 				con.setDrawColor(new Color(112, 58, 255));
@@ -152,13 +154,17 @@ public class CPTJaden {
 					themeIn.close();
 
 					con.println("Theme \"" + strThemeName + "\" selected!");
+					con.println();
+					con.println("Press Enter to return to menu.");
 					con.readLine();
 				}
             } else if (strChoice.equals("t")) {
 				con.setDrawColor(new Color(112, 58, 255));
 				con.fillRect(0, 0, 1280, 720);
                 con.println("Theme Creator feature not implemented yet.");
-                con.readLine();
+                con.println();
+				con.println("Press Enter to return to menu.");
+				con.readLine();
             } else if (strChoice.equals("q")) {
                 blnExit = true;
             } else {
@@ -234,7 +240,7 @@ public class CPTJaden {
 		con.fillRect(0, 620, 1280, 100);
 		
 		con.setDrawColor(Color.WHITE);
-		printCentered(con, " - Connect 4 - ");
+		printCentered(con, strGameTitle);
 		
 		Font scoreFont = con.loadFont("ArialNarrow7-9YJ9n.ttf", 22);
 		Font nameFont = con.loadFont("ArialNarrow7-9YJ9n.ttf", 18);
