@@ -5,6 +5,11 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 
 public class CPTJaden {
+	static Color colP1Theme = Color.RED;
+    static Color colP2Theme = Color.YELLOW;
+    static Color colBoardTheme = Color.BLUE;
+    static String strGameTitle = "Connect 4";
+    
     public static void main(String[] args) {
         Console con = new Console("Connect 4", 1280,720);
         con.setBackgroundColor(new Color(112, 58, 255));
@@ -88,10 +93,67 @@ public class CPTJaden {
 				con.fillRect(0, 0, 1280, 720);
 				viewLeaderboard(con, strP1Name, intP1Wins, strP2Name, intP2Wins);
             } else if (strChoice.equals("c")) {
+				String[] strThemeFiles = {
+					"classic.txt",
+					"christmas.txt",
+				};
+
 				con.setDrawColor(new Color(112, 58, 255));
 				con.fillRect(0, 0, 1280, 720);
-                con.println("Choose Theme feature not implemented yet.");
-                con.readLine();
+
+				// Display available themes
+				con.println("Choose a theme:");
+				for (int i = 0; i < strThemeFiles.length; i++) {
+					con.println((i + 1) + ". " + strThemeFiles[i]);
+				}
+
+				con.print("Enter the number of your theme choice: ");
+				int intThemeChoice = con.readInt();
+				
+				// Input validation
+				if (intThemeChoice < 1 || intThemeChoice > strThemeFiles.length) {
+					con.println("Invalid choice.");
+					con.readLine();
+				} else {
+					String strSelectedTheme = strThemeFiles[intThemeChoice - 1];
+
+					// Save selection
+					TextOutputFile outTheme = new TextOutputFile("lasttheme.txt");
+					outTheme.println(strSelectedTheme);
+					outTheme.close();
+
+					// Read the selected theme file
+					TextInputFile themeIn = new TextInputFile(strSelectedTheme);
+					String strThemeName = themeIn.readLine();
+
+					// Read P1 RGB
+					int intP1R = Integer.parseInt(themeIn.readLine());
+					int intP1G = Integer.parseInt(themeIn.readLine());
+					int intP1B = Integer.parseInt(themeIn.readLine());
+
+					// Read P2 RGB
+					int intP2R = Integer.parseInt(themeIn.readLine());
+					int intP2G = Integer.parseInt(themeIn.readLine());
+					int intP2B = Integer.parseInt(themeIn.readLine());
+
+					// Read Board RGB
+					int intBoardR = Integer.parseInt(themeIn.readLine());
+					int intBoardG = Integer.parseInt(themeIn.readLine());
+					int intBoardB = Integer.parseInt(themeIn.readLine());
+
+					// Read game title
+					strGameTitle = themeIn.readLine();
+
+					// Assign colors
+					colP1Theme = new Color(intP1R, intP1G, intP1B);
+					colP2Theme = new Color(intP2R, intP2G, intP2B);
+					colBoardTheme = new Color(intBoardR, intBoardG, intBoardB);
+
+					themeIn.close();
+
+					con.println("Theme \"" + strThemeName + "\" selected!");
+					con.readLine();
+				}
             } else if (strChoice.equals("t")) {
 				con.setDrawColor(new Color(112, 58, 255));
 				con.fillRect(0, 0, 1280, 720);
@@ -230,10 +292,10 @@ public class CPTJaden {
 				int intx = intstartX + intCol * (intdiscSize + intgap);
 				int inty = intstartY + intRow * (intdiscSize + intgap); 
 				if (intBoard[intRow][intCol] == 1) {
-					con.setDrawColor(Color.RED);
+					con.setDrawColor(colP1Theme);
 					con.fillOval(intx-5, inty-5, intdiscSize, intdiscSize);
 				} else if (intBoard[intRow][intCol] == 2) {
-					con.setDrawColor(Color.YELLOW);
+					con.setDrawColor(colP2Theme);
 					con.fillOval(intx-5, inty-5, intdiscSize, intdiscSize);
 				}
             }
@@ -309,8 +371,7 @@ public class CPTJaden {
 			intCount++;
 		}
 		leaderBoard.close();
-
-		// Sort
+		
 		for (int i = 0; i < intCount - 1; i++) {
 			for (int j = 0; j < intCount - i - 1; j++) {
 				int intWins1 = Integer.parseInt(strLeaderboard[j][1]);
@@ -336,7 +397,7 @@ public class CPTJaden {
 		con.println("Press Enter to return to menu.");
 		con.readLine();
 	}
-	
+
 	public static void drawCenteredString(Console con, String strText, int intboxX, int intboxY, int intboxWidth, int intyPosition, Font font, Color color) {
 		con.setDrawFont(font);
 		FontMetrics fm = con.getDrawFontMetrics();
