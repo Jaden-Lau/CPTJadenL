@@ -270,42 +270,49 @@ public class CPTJaden {
 		drawCenteredString(con, String.valueOf(intP2Wins), intboxX2, intboxY, intboxWidth, intboxY + 75, scoreFont, Color.BLACK);
 		
         con.println();
-        BufferedImage img = con.loadImage("Connect 4 Board.png");
-		int intimgX = (1280 - img.getWidth()) / 2;
-		int intimgY = 130;
-		con.drawImage(img, intimgX, intimgY);
 		int intdiscSize = 60;
 		int intgap = 10;
-		int intstartX = intimgX + 10;
-		int intstartY = intimgY + 15;
 
 		Font numberFont = con.loadFont("ArialNarrow7-9YJ9n.ttf", 22);
 		con.setDrawFont(numberFont);
 		FontMetrics fm = con.getDrawFontMetrics();
+		
+        int intBoardX = 390;
+		int intBoardY = 120;    
+		int intBoardWidth = 490;
+		int intBoardHeight = 420;
+
+		con.setDrawColor(colBoardTheme);
+		con.fillRect(intBoardX, intBoardY, intBoardWidth, intBoardHeight);
 
 		for (int intCol = 0; intCol < 7; intCol++) {
 			String strcolNumber = String.valueOf(intCol + 1);
 			int inttextWidth = fm.stringWidth(strcolNumber);
-			int intcenterX = intimgX + intCol * (intdiscSize + intgap) + intdiscSize / 2;
+			int intcenterX = 390 + intCol * (intdiscSize + intgap) + intdiscSize / 2;
 			int inttextX = intcenterX+6 - inttextWidth / 2;
-			int inttextY = intimgY - 20;
+			int inttextY = 90;
 			con.setDrawColor(Color.WHITE);
 			con.drawString(strcolNumber, inttextX, inttextY);
 		}
 
 		for (int intRow = 0; intRow < 6; intRow++) {
 			for (int intCol = 0; intCol < 7; intCol++) {
-				int intx = intstartX + intCol * (intdiscSize + intgap);
-				int inty = intstartY + intRow * (intdiscSize + intgap); 
-				if (intBoard[intRow][intCol] == 1) {
+				int intX = 400 + intCol * (intdiscSize + intgap);
+				int intY = 130 + intRow * (intdiscSize + intgap);
+
+				if (intBoard[intRow][intCol] == 0) {
+					con.setDrawColor(Color.WHITE);
+				} else if (intBoard[intRow][intCol] == 1) {
 					con.setDrawColor(colP1Theme);
-					con.fillOval(intx-5, inty-5, intdiscSize, intdiscSize);
-				} else if (intBoard[intRow][intCol] == 2) {
+				} else {
 					con.setDrawColor(colP2Theme);
-					con.fillOval(intx-5, inty-5, intdiscSize, intdiscSize);
 				}
-            }
-        }
+
+				con.fillOval(intX-5, intY-5, intdiscSize, intdiscSize);
+			}
+		}
+
+
     }
 
     public static boolean checkWin(int[][] intBoard, int intPlayer) {
