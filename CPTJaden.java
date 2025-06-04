@@ -81,6 +81,29 @@ public class CPTJaden {
 						intP2Wins++;
 					}
 					
+					if (intWinner == 1 || intWinner == 2) {
+						con.clear();
+						con.setDrawColor(new Color(0, 0, 0, 150));
+						con.fillRect(0, 0, 1280, 720);
+						
+						int intBoxHeight = 120;
+						int intBoxY = 720 - intBoxHeight;
+						con.setDrawColor(new Color(255, 255, 255));
+						con.fillRect(0, intBoxY, 1280, intBoxHeight);
+
+						String strWinnerName = (intWinner == 1) ? strP1Name : strP2Name;						
+						String strWinMessage = strWinnerName + " Wins!";
+						FontMetrics fm = con.getDrawFontMetrics();
+						int intTextWidth = fm.stringWidth(strWinMessage);
+						int intX = (1280 - intTextWidth) / 2;
+						int intY = intBoxY + 75;
+
+						con.setDrawColor(new Color(0, 0, 0));
+						con.drawString(strWinMessage, intX, intY);
+						
+						con.sleep(3000);
+					}
+					
 					con.clear();
 					con.setDrawColor(new Color(112, 58, 255));
 					con.fillRect(0, 0, 1280, 720);
@@ -197,7 +220,7 @@ public class CPTJaden {
         while (true) {
             drawBoard(con, intBoard, strP1, strP2, intP1Wins, intP2Wins);
             con.println();
-            con.print("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n" + (intCurrentPlayer == 1 ? strP1 : strP2) + " (" + (intCurrentPlayer == 1 ? "Red" : "Yellow") + "), choose column (1-7): ");
+            con.print("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n" + (intCurrentPlayer == 1 ? strP1 : strP2) + ", choose column (1-7): ");
             int intCol = con.readInt() - 1;
 
             if (intCol < 0 || intCol > 6) {
@@ -210,8 +233,6 @@ public class CPTJaden {
             }
 
             if (checkWin(intBoard, intCurrentPlayer)) {
-                drawBoard(con, intBoard, strP1, strP2, intP1Wins, intP2Wins);
-                printCentered(con, (intCurrentPlayer == 1 ? strP1 : strP2) + " WINS!");
 				return intCurrentPlayer;
             }
 
