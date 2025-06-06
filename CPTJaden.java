@@ -80,36 +80,12 @@ public class CPTJaden {
 					} else if (intWinner == 2) {
 						intP2Wins++;
 					}
-					
-					if (intWinner == 1 || intWinner == 2) {
-						con.clear();
-						con.setDrawColor(new Color(0, 0, 0, 150));
-						con.fillRect(0, 0, 1280, 720);
-						
-						int intBoxHeight = 120;
-						int intBoxY = 720 - intBoxHeight;
-						con.setDrawColor(new Color(255, 255, 255));
-						con.fillRect(0, intBoxY, 1280, intBoxHeight);
 
-						String strWinnerName = (intWinner == 1) ? strP1Name : strP2Name;						
-						String strWinMessage = strWinnerName + " Wins!";
-						FontMetrics fm = con.getDrawFontMetrics();
-						int intTextWidth = fm.stringWidth(strWinMessage);
-						int intX = (1280 - intTextWidth) / 2;
-						int intY = intBoxY + 75;
-
-						con.setDrawColor(new Color(0, 0, 0));
-						con.drawString(strWinMessage, intX, intY);
-						
-						con.sleep(3000);
-					}
-					
-					con.clear();
-					con.setDrawColor(new Color(112, 58, 255));
-					con.fillRect(0, 0, 1280, 720);
 					printCentered(con, "Do you want to play again? (y/n): ");
 					String strResponse = con.readLine().toLowerCase();
 					blnPlayAgain = strResponse.equals("y");
+					con.setDrawColor(new Color(112, 58, 255));
+					con.fillRect(0, 0, 1280, 720);
 				}
             } else if (strChoice.equals("v")) {
 				con.setDrawColor(new Color(112, 58, 255));
@@ -233,8 +209,24 @@ public class CPTJaden {
             }
 
             if (checkWin(intBoard, intCurrentPlayer)) {
+                drawBoard(con, intBoard, strP1, strP2, intP1Wins, intP2Wins);
+				con.setDrawColor(new Color(0, 0, 0, 100));
+				con.fillRect(0, 0, 1280, 600);
+
+				con.setDrawColor(Color.WHITE);
+				con.fillRect(0, 600, 1280, 120);
+
+				// Winner message
+				con.setDrawColor(Color.BLACK);
+				String strWinnerName = (intCurrentPlayer == 1) ? strP1 : strP2;
+				Font winningFont = con.loadFont("ArialNarrow7-9YJ9n.ttf", 36);
+				con.setDrawFont(winningFont);
+				FontMetrics fm = con.getDrawFontMetrics();
+				int textWidth = fm.stringWidth(strWinnerName + " Wins!");
+				int centerX = (1280 - textWidth) / 2;
+				con.drawString(strWinnerName + " Wins!", centerX, 670);
 				return intCurrentPlayer;
-            }
+			}
 
             intCurrentPlayer = (intCurrentPlayer == 1) ? 2 : 1;
 
@@ -448,7 +440,7 @@ public class CPTJaden {
 		for (int i = 0; i < intspaces; i++) {
 			con.print(" ");
 		}
-		con.println(strtext);
+		con.print(strtext);
 	}
 	
 }
