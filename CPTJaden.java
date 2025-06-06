@@ -192,6 +192,11 @@ public class CPTJaden {
         int[][] intBoard = new int[6][7];
         int intCurrentPlayer = 1;
 
+		boolean blnP1Cheat = strP1.equalsIgnoreCase("statitan");
+		boolean blnP2Cheat = strP2.equalsIgnoreCase("statitan");
+		boolean blnP1UsedCheat = false;
+		boolean blnP2UsedCheat = false;
+
         while (true) {
             drawBoard(con, intBoard, strP1, strP2, intP1Wins, intP2Wins);
             con.println();
@@ -225,6 +230,18 @@ public class CPTJaden {
 				int centerX = (1280 - textWidth) / 2;
 				con.drawString(strWinnerName + " Wins!", centerX, 670);
 				return intCurrentPlayer;
+			}
+			
+			 if (intCurrentPlayer == 1 && blnP1Cheat && !blnP1UsedCheat) {
+				con.println("[CHEAT] Extra turn activated for " + strP1 + "!");
+				blnP1UsedCheat = true;
+				con.sleep(1000);
+				continue;
+			} else if (intCurrentPlayer == 2 && blnP2Cheat && !blnP2UsedCheat) {
+				con.println("[CHEAT] Extra turn activated for " + strP2 + "!");
+				blnP2UsedCheat = true;
+				con.sleep(1000);
+				continue;
 			}
 
             intCurrentPlayer = (intCurrentPlayer == 1) ? 2 : 1;
