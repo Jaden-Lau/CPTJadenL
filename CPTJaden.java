@@ -92,18 +92,20 @@ public class CPTJaden {
 				con.fillRect(0, 0, 1280, 720);
 				viewLeaderboard(con, strP1Name, intP1Wins, strP2Name, intP2Wins);
             } else if (strChoice.equals("c")) {
+				con.clear();
 				String[] strThemeFiles = {
 					"classic.txt",
 					"christmas.txt",
 					"vintage.txt",
 					"galactic.txt",
+					"owntheme.txt",
 				};
 
 				con.setDrawColor(new Color(112, 58, 255));
 				con.fillRect(0, 0, 1280, 720);
 
 				// Display available themes
-				con.println("Choose a theme:");
+				con.println("Choose a theme (in order to use owntheme.txt, must create own theme in Theme Creator menu):");
 				for (int i = 0; i < strThemeFiles.length; i++) {
 					con.println((i + 1) + ". " + strThemeFiles[i]);
 				}
@@ -158,11 +160,8 @@ public class CPTJaden {
 					con.readLine();
 				}
             } else if (strChoice.equals("t")) {
-				con.setDrawColor(new Color(112, 58, 255));
-				con.fillRect(0, 0, 1280, 720);
-                con.println("Theme Creator feature not implemented yet.");
-                con.println();
-				con.println("Press Enter to return to menu.");
+                createTheme(con);
+				con.println("\nPress Enter to return to menu.");
 				con.readLine();
             } else if (strChoice.equals("q")) {
                 blnExit = true;
@@ -423,6 +422,59 @@ public class CPTJaden {
 		con.println("Press Enter to return to menu.");
 		con.readLine();
 	}
+	public static void createTheme(Console con) {
+		con.clear();
+		con.setDrawColor(new Color(112, 58, 255));
+		con.fillRect(0, 0, 1280, 720);
+		con.println("Create Your Own Theme");
+		con.println("---------------------------");
+
+		con.print("Enter Theme Name: ");
+		String strThemeName = con.readLine();
+
+		con.println("\nPlayer 1 Color:");
+		con.print("  R: ");
+		int intP1R = con.readInt();
+		con.print("  G: ");
+		int intP1G = con.readInt();
+		con.print("  B: ");
+		int intP1B = con.readInt();
+
+		con.println("\nPlayer 2 Color:");
+		con.print("  R: ");
+		int intP2R = con.readInt();
+		con.print("  G: ");
+		int intP2G = con.readInt();
+		con.print("  B: ");
+		int intP2B = con.readInt();
+
+		con.println("\nBoard Background Color:");
+		con.print("  R: ");
+		int intBoardR = con.readInt();
+		con.print("  G: ");
+		int intBoardG = con.readInt();
+		con.print("  B: ");
+		int intBoardB = con.readInt();
+
+		con.print("\nEnter Game Title: ");
+		String strGameTitle = con.readLine();
+		
+		TextOutputFile own = new TextOutputFile("owntheme.txt");
+		own.println(strThemeName);
+		own.println(intP1R);
+		own.println(intP1G);
+		own.println(intP1B);
+		own.println(intP2R);
+		own.println(intP2G);
+		own.println(intP2B);
+		own.println(intBoardR);
+		own.println(intBoardG);
+		own.println(intBoardB);
+		own.println(strGameTitle);
+		own.close();
+		con.println("\nTheme saved successfully to 'owntheme.txt'!");
+	}
+
 
 	public static void drawCenteredString(Console con, String strText, int intboxX, int intboxY, int intboxWidth, int intyPosition, Font font, Color color) {
 		con.setDrawFont(font);
