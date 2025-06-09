@@ -3,6 +3,7 @@ import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.awt.Font;
 import java.awt.FontMetrics;
+import java.util.Random;
 
 public class CPTJaden {
 	static Color colP1Theme = Color.RED;
@@ -165,6 +166,8 @@ public class CPTJaden {
 				con.readLine();
             } else if (strChoice.equals("q")) {
                 blnExit = true;
+            } else if (strChoice.equals("s")) {
+				showSecretJoke(con);     
             } else {
                 con.println("Invalid choice. Please try again.");
                 con.readLine();
@@ -491,7 +494,40 @@ public class CPTJaden {
 		own.close();
 		con.println("\nTheme saved successfully to 'owntheme.txt'!");
 	}
+	
+	public static void showSecretJoke(Console con) {
+		String[] arrJokes = {
+			"Why did the Java developer go broke? Because he used up all his cache!",
+			"Why do programmers prefer dark mode? Because light attracts bugs!",
+			"How many programmers does it take to change a light bulb? None, it's a hardware problem.",
+			"I would tell you a UDP joke, but you might not get it.",
+			"What's a Java developer’s favorite place to sit? The null pointer!"
+		};
 
+		Random rand = new Random();
+		int randomIndex = rand.nextInt(arrJokes.length);
+
+		con.clear();
+		con.setDrawColor(new Color(0, 0, 0));
+		con.fillRect(0, 0, 1280, 720);
+
+		con.setDrawColor(new Color(0, 255, 0));
+		Font jokeFont = con.loadFont("ArialNarrow7-9YJ9n.ttf", 28);
+		con.setDrawFont(jokeFont);
+
+		FontMetrics fm = con.getDrawFontMetrics();
+		String strjoke = arrJokes[randomIndex];
+		int textWidth = fm.stringWidth(strjoke);
+		int centerX = (1280 - textWidth) / 2;
+
+		con.drawString(strjoke, centerX, 360);
+		
+		con.repaint();
+
+		con.sleep(4000);
+		con.setDrawColor(new Color(112, 58, 255));
+		con.fillRect(0, 0, 1280, 720);
+	}
 
 	public static void drawCenteredString(Console con, String strText, int intboxX, int intboxY, int intboxWidth, int intyPosition, Font font, Color color) {
 		con.setDrawFont(font);
