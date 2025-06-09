@@ -6,26 +6,31 @@ import java.awt.FontMetrics;
 import java.util.Random;
 
 public class CPTJaden {
+	// Global variables for colour themes
 	static Color colP1Theme = Color.RED;
     static Color colP2Theme = Color.YELLOW;
     static Color colBoardTheme = Color.BLUE;
     static String strGameTitle = "Connect 4";
     
     public static void main(String[] args) {
+		// Setup console, title, and create background colour
         Console con = new Console("Connect 4", 1280,720);
         con.setBackgroundColor(new Color(112, 58, 255));
         displayMainMenu(con);
     }
 
     public static void displayMainMenu(Console con) {
+		// initialize variables need to play game
         boolean blnExit = false;
 
         String strP1Name = "";
         String strP2Name = "";
         int intP1Wins = 0;
         int intP2Wins = 0;
-
+		
+		// This while loop will run until the user decides to quit the game
         while (!blnExit) {
+			// initialize variables for the main menu
             con.clear();
             
             int intcardX = 390;
@@ -37,42 +42,52 @@ public class CPTJaden {
 			int intbuttonHeight = 60;
 			int intstartY = intcardY + 140;
 			int intspacingY = 80;
-
+			
+			// Draw rectangle for where the main buttons will be in
 			con.setDrawColor(new Color(146, 82, 255));
 			con.fillRoundRect(intcardX, intcardY, intcardWidth, intcardHeight, 40, 40);
 
+			// Outline for the main buttons
 			con.setDrawColor(Color.BLACK);
 			con.drawRoundRect(intcardX, intcardY, intcardWidth, intcardHeight, 40, 40);
             
+            
+            // Draw the Connect 4 Logo, positioned to align with the rest of the main menu
             BufferedImage logo = con.loadImage("Connect 4 Logo.png");
 			int intlogoX = (logo.getWidth()) / 2;
 			int intlogoY = 20;
 			con.drawImage(logo, intlogoX, intlogoY);
-					
+			
+			// Array of strings for the game/main menu options
 			String[] strlabels = {
 				"(P)lay Game",
 				"(V)iew Leaderboard",
 				"(C)hoose Theme",
 				"(T)heme Creator",
-				"(Q)uit"
+				"(Q)uit",
 			};
 			
+			// Will draw all the main menu buttons for how much is in the array
 			for (int i = 0; i < strlabels.length; i++) {
 				drawButton(con, strlabels[i], intcenterX, intstartY + (i * intspacingY), intbuttonWidth, intbuttonHeight, Color.WHITE);
 			}
 			
+			// Will ask the user to type in the option they want according to the main menu (p,v,c,t,q,[s])
             con.print("\nChoose an option: ");
             String strChoice = con.readLine().toLowerCase();
-
+			
+			// This is where the program takes in what the user inputted before, and run a code based on the user's choice
             if (strChoice.equals("p")) {
+				// Asking the user to input P1 and P2 name
                 if (strP1Name.equals("") || strP2Name.equals("")) {
                     con.print("Enter Player 1 name: ");
                     strP1Name = con.readLine();
                     con.print("Enter Player 2 name: ");
                     strP2Name = con.readLine();
                 }
+                // Set plat game background
                 con.setDrawColor(new Color(112, 58, 255));
-				con.fillRect(0, 0, 1280, 720);
+				con.setBackgroundColor(new Color(112, 58, 255));
                 boolean blnPlayAgain = true;
                 while(blnPlayAgain) {
 					int intWinner = playGame(con, strP1Name, strP2Name, intP1Wins, intP2Wins);
@@ -85,12 +100,10 @@ public class CPTJaden {
 					printCentered(con, "Do you want to play again? (y/n): ");
 					String strResponse = con.readLine().toLowerCase();
 					blnPlayAgain = strResponse.equals("y");
-					con.setDrawColor(new Color(112, 58, 255));
-					con.fillRect(0, 0, 1280, 720);
+					con.setBackgroundColor(new Color(112, 58, 255));
 				}
             } else if (strChoice.equals("v")) {
-				con.setDrawColor(new Color(112, 58, 255));
-				con.fillRect(0, 0, 1280, 720);
+				con.setBackgroundColor(new Color(112, 58, 255));
 				viewLeaderboard(con, strP1Name, intP1Wins, strP2Name, intP2Wins);
             } else if (strChoice.equals("c")) {
 				con.clear();
@@ -102,8 +115,7 @@ public class CPTJaden {
 					"owntheme.txt",
 				};
 
-				con.setDrawColor(new Color(112, 58, 255));
-				con.fillRect(0, 0, 1280, 720);
+				con.setBackgroundColor(new Color(112, 58, 255));
 
 				// Display available themes
 				con.println("Choose a theme (in order to use owntheme.txt, must create own theme in Theme Creator menu):");
@@ -444,8 +456,7 @@ public class CPTJaden {
 	}
 	public static void createTheme(Console con) {
 		con.clear();
-		con.setDrawColor(new Color(112, 58, 255));
-		con.fillRect(0, 0, 1280, 720);
+		con.setBackgroundColor(new Color(112, 58, 255));
 		con.println("Create Your Own Theme");
 		con.println("---------------------------");
 
@@ -508,8 +519,7 @@ public class CPTJaden {
 		int randomIndex = rand.nextInt(arrJokes.length);
 
 		con.clear();
-		con.setDrawColor(new Color(0, 0, 0));
-		con.fillRect(0, 0, 1280, 720);
+		con.setBackgroundColor(new Color(0,0,0));
 
 		con.setDrawColor(new Color(0, 255, 0));
 		Font jokeFont = con.loadFont("ArialNarrow7-9YJ9n.ttf", 28);
@@ -525,8 +535,7 @@ public class CPTJaden {
 		con.repaint();
 
 		con.sleep(4000);
-		con.setDrawColor(new Color(112, 58, 255));
-		con.fillRect(0, 0, 1280, 720);
+		con.setBackgroundColor(new Color(112, 58, 255));
 	}
 
 	public static void drawCenteredString(Console con, String strText, int intboxX, int intboxY, int intboxWidth, int intyPosition, Font font, Color color) {
