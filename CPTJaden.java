@@ -85,10 +85,11 @@ public class CPTJaden {
                     con.print("Enter Player 2 name: ");
                     strP2Name = con.readLine();
                 }
-                // Set plat game background
+                // Set play game background and variable if the player wants to play again
                 con.setDrawColor(new Color(112, 58, 255));
 				con.setBackgroundColor(new Color(112, 58, 255));
                 boolean blnPlayAgain = true;
+                // When blnPlatAgain is true, it will continue to run the main gameplay function
                 while(blnPlayAgain) {
 					int intWinner = playGame(con, strP1Name, strP2Name, intP1Wins, intP2Wins);
 					if (intWinner == 1) {
@@ -96,17 +97,20 @@ public class CPTJaden {
 					} else if (intWinner == 2) {
 						intP2Wins++;
 					}
-
+					// Asks the user if they want to play again. If they want to play again, the board will reset, the win will be counted to whom ever won.
+					// If they don't want to play again, it will leave the while loop
 					printCentered(con, "Do you want to play again? (y/n): ");
 					String strResponse = con.readLine().toLowerCase();
 					blnPlayAgain = strResponse.equals("y");
 					con.setBackgroundColor(new Color(112, 58, 255));
 				}
             } else if (strChoice.equals("v")) {
+				// Display the leaderboard according to the amount of wins for each player
 				con.setBackgroundColor(new Color(112, 58, 255));
 				viewLeaderboard(con, strP1Name, intP1Wins, strP2Name, intP2Wins);
             } else if (strChoice.equals("c")) {
 				con.clear();
+				// Array of the different themes the user can choose from
 				String[] strThemeFiles = {
 					"classic.txt",
 					"christmas.txt",
@@ -122,7 +126,8 @@ public class CPTJaden {
 				for (int i = 0; i < strThemeFiles.length; i++) {
 					con.println((i + 1) + ". " + strThemeFiles[i]);
 				}
-
+				
+				// Asks the user to choose the theme they want to use
 				con.print("Enter the number of your theme choice: ");
 				int intThemeChoice = con.readInt();
 				
@@ -133,12 +138,12 @@ public class CPTJaden {
 				} else {
 					String strSelectedTheme = strThemeFiles[intThemeChoice - 1];
 
-					// Save selection
+					// Save selection to lasttheme.txt
 					TextOutputFile outTheme = new TextOutputFile("lasttheme.txt");
 					outTheme.println(strSelectedTheme);
 					outTheme.close();
 
-					// Read the selected theme file
+					// Open the selected theme file for reading
 					TextInputFile themeIn = new TextInputFile(strSelectedTheme);
 					String strThemeName = themeIn.readLine();
 
@@ -160,27 +165,32 @@ public class CPTJaden {
 					// Read game title
 					strGameTitle = themeIn.readLine();
 
-					// Assign colors
+					// Assign colors to global variables
 					colP1Theme = new Color(intP1R, intP1G, intP1B);
 					colP2Theme = new Color(intP2R, intP2G, intP2B);
 					colBoardTheme = new Color(intBoardR, intBoardG, intBoardB);
 
 					themeIn.close();
-
+					
+					// Confirms to the user what theme they selected
 					con.println("Theme \"" + strThemeName + "\" selected!");
 					con.println();
 					con.println("Press Enter to return to menu.");
 					con.readLine();
 				}
             } else if (strChoice.equals("t")) {
+				// Perform code to create the player's own theme
                 createTheme(con);
 				con.println("\nPress Enter to return to menu.");
 				con.readLine();
             } else if (strChoice.equals("q")) {
+				// If the user types q in main menu, the program will stop
                 blnExit = true;
             } else if (strChoice.equals("s")) {
+				// Secret joke menu that will display a joke
 				showSecretJoke(con);     
             } else {
+				// If the user inputs a choice not on the menu or secret menu, it will say invalid for that input
                 con.println("Invalid choice. Please try again.");
                 con.readLine();
             }
@@ -189,6 +199,7 @@ public class CPTJaden {
         con.println("Thanks for playing!");
     }
     
+    // This method will draw the buttons for the main menu
     public static void drawButton(Console con, String strLabel, int intcenterX, int inty, int intwidth, int intheight, Color fillColor) {
 		int intx = intcenterX - intwidth / 2;
 		con.setDrawColor(Color.BLACK);
@@ -203,16 +214,20 @@ public class CPTJaden {
 		con.drawString(strLabel, intx + 20, inty + 12);
 	}
 
+	// Main game function
     public static int playGame(Console con, String strP1, String strP2, int intP1Wins, int intP2Wins) {
+		// Sets a two-dimensional array for the Connect 4 board
         int[][] intBoard = new int[6][7];
         int intCurrentPlayer = 1;
-
+		
+		// Initialize variables for cheats
 		boolean blnP1Cheat = strP1.equalsIgnoreCase("statitan");
 		boolean blnP2Cheat = strP2.equalsIgnoreCase("statitan");
 		boolean blnP1UsedCheat = false;
 		boolean blnP2UsedCheat = false;
-
+		// Will always run as long the main game function runs
         while (true) {
+			// Draws the Connect 4 board with both players names and the number of wins for each player
             drawBoard(con, intBoard, strP1, strP2, intP1Wins, intP2Wins);
             con.println();
             con.print("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n" + (intCurrentPlayer == 1 ? strP1 : strP2) + ", choose column (1-7): ");
