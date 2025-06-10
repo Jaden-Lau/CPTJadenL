@@ -246,46 +246,51 @@ public class CPTJaden {
         
         int intMouseButtonLastFrame = 0; // To detect a distinct click
         
+        // Prints instructions for the user to follow
         String instruction = (intCurrentPlayer == 1 ? strP1 : strP2) + ", click a column to drop your piece.";
         
+        // Draw board once to display
+        drawBoard(con, intBoard, strP1, strP2, intP1Wins, intP2Wins, (intCurrentPlayer == 1 ? strP1 : strP2), instruction);
         // Will always run as long the main game function runs
         while (true) {
             int intCol = -1;
             boolean clicked = false;
+            int prevHoveredCol = -1;
             
-             // Loop to wait for a mouse click to drop a piece
+            // This inner loop continuously runs, updating the game state and checking for player's mouse click to drop a piece
             while (!clicked) {
-                // Continuously draw the board to update the arrow
-                drawBoard(con, intBoard, strP1, strP2, intP1Wins, intP2Wins, (intCurrentPlayer == 1 ? strP1 : strP2), instruction);
-
+				int mouseX = con.currentMouseX();
+				int mouseY = con.currentMouseY();
+				int hoveredCol = -1;
 				
-				con.repaint();
+				// Check if the mouse is within the interactive area above the Connect 4 board
+				if (mouseY >= 0 && mouseY < 540 && mouseX >= intBoardX && mouseX <= intBoardX + intColWidth * 7) {
+					hoveredCol = (mouseX - intBoardX) / intColWidth;
+				}
+
+				if (hoveredCol != prevHoveredCol) {
+					// Redraw the entire game board, including the updated arrow position
+					drawBoard(con, intBoard, strP1, strP2, intP1Wins, intP2Wins, (intCurrentPlayer == 1 ? strP1 : strP2), instruction);
+					con.repaint();
+					prevHoveredCol = hoveredCol;
+				}
 				
-                int intMouseButtonNow = con.currentMouseButton();
-
-                // Detect click: mouse was not pressed last frame, but is pressed now
-                if (intMouseButtonNow == 1 && intMouseButtonLastFrame == 0) { // Check for left mouse button press
-                    // Mouse was just pressed, process the click
-                    int mouseX = con.currentMouseX();
-                    int mouseY = con.currentMouseY();
-
-                    // Check if the click is within the clickable area above the board
-                    int clickableAreaYStart = 80; // T Y position of the column numbers
-                    int clickableAreaYEnd = 120 + 420; // intBoardY + intBoardHeight
-
-                    if (mouseY >= clickableAreaYStart && mouseY <= clickableAreaYEnd &&
-                        mouseX >= intBoardX && mouseX <= intBoardX + (intColWidth * 7)) { // Check within board X bounds
-                        // Calculate column based on mouse X
-                        intCol = (mouseX - intBoardX) / intColWidth;
-                        clicked = true; // A valid click occurred, exit the inner loop
-                    } else {
-                        System.out.println("[DEBUG] Click outside valid board area: (" + mouseX + ", " + mouseY + ")");
-                    }
-                }
-                intMouseButtonLastFrame = intMouseButtonNow;
-
-                con.sleep(30); 
-            }
+				// Get the current state of the mouse buttons
+				int intMouseButtonNow = con.currentMouseButton();
+				if (intMouseButtonNow == 1 && intMouseButtonLastFrame == 0) {
+					// If a click occurred, check if it was over a valid column
+					if (hoveredCol >= 0 && hoveredCol < 7) {
+						intCol = hoveredCol;
+						clicked = true;
+					} else {
+						// If the click was outside a valid column, print a debug message.
+						System.out.println("[DEBUG] Click outside valid board area: (" + mouseX + ", " + mouseY + ")");
+					}
+				}
+				// Update intMouseButtonLastFrame
+				intMouseButtonLastFrame = intMouseButtonNow;
+				con.sleep(30);
+			}
             
             // Ensures the chosen column is within valid range
             if (intCol < 0 || intCol > 6) {
@@ -321,7 +326,7 @@ public class CPTJaden {
                 con.drawString(strWinnerName + " Wins!", centerX, 670);
                 
                 con.repaint();
-                con.sleep(2000);
+                con.sleep(1000);
                 return intCurrentPlayer;
             }
 
