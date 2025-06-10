@@ -6,16 +6,28 @@ import java.awt.FontMetrics;
 import java.util.Random;
 
 public class CPTJaden {
-    // Global variables for colour themes
+    // Global variables for colour themes and fonts
     static Color colP1Theme = Color.RED;
     static Color colP2Theme = Color.YELLOW;
     static Color colBoardTheme = Color.BLUE;
     static String strGameTitle = "Connect 4";
+    static Font FONT_SCORE;
+    static Font FONT_NAME;
+    static Font FONT_NUMBER;
+    static Font FONT_INSTRUCTION;
+    static Font FONT_WINNING;
 
     public static void main(String[] args) {
         // Setup console, title, and create background colour
         Console con = new Console("Connect 4", 1280, 720);
         con.setBackgroundColor(new Color(112, 58, 255));
+        
+        FONT_SCORE = con.loadFont("ArialNarrow7-9YJ9n.ttf", 22);
+        FONT_NAME = con.loadFont("ArialNarrow7-9YJ9n.ttf", 18);
+        FONT_NUMBER = con.loadFont("ArialNarrow7-9YJ9n.ttf", 22);
+        FONT_INSTRUCTION = con.loadFont("ArialNarrow7-9YJ9n.ttf", 24);
+        FONT_WINNING = con.loadFont("ArialNarrow7-9YJ9n.ttf", 36);
+        
         displayMainMenu(con);
     }
 
@@ -225,32 +237,74 @@ public class CPTJaden {
         boolean blnP2Cheat = strP2.equalsIgnoreCase("statitan");
         boolean blnP1UsedCheat = false;
         boolean blnP2UsedCheat = false;
+        
+        // Board drawing dimensions
+        int intBoardX = 390;
+        int intdiscSize = 60;
+        int intgap = 10;
+        int intColWidth = intdiscSize + intgap;
+        
+        int intMouseButtonLastFrame = 0; // To detect a distinct click
+        
+        String instruction = (intCurrentPlayer == 1 ? strP1 : strP2) + ", click a column to drop your piece.";
+        
         // Will always run as long the main game function runs
         while (true) {
-            // Draws the Connect 4 board with both players names and the number of wins for each player
-            drawBoard(con, intBoard, strP1, strP2, intP1Wins, intP2Wins);
-            con.println();
-            con.print("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n" + (intCurrentPlayer == 1 ? strP1 : strP2) + ", choose column (1-7): ");
-            int intCol = con.readInt() - 1;
+            int intCol = -1;
+            boolean clicked = false;
+            
+             // Loop to wait for a mouse click to drop a piece
+            while (!clicked) {
+                // Continuously draw the board to update the arrow
+                drawBoard(con, intBoard, strP1, strP2, intP1Wins, intP2Wins, (intCurrentPlayer == 1 ? strP1 : strP2), instruction);
 
+				
+				con.repaint();
+				
+                int intMouseButtonNow = con.currentMouseButton();
+
+                // Detect click: mouse was not pressed last frame, but is pressed now
+                if (intMouseButtonNow == 1 && intMouseButtonLastFrame == 0) { // Check for left mouse button press
+                    // Mouse was just pressed, process the click
+                    int mouseX = con.currentMouseX();
+                    int mouseY = con.currentMouseY();
+
+                    // Check if the click is within the clickable area above the board
+                    int clickableAreaYStart = 80; // T Y position of the column numbers
+                    int clickableAreaYEnd = 120 + 420; // intBoardY + intBoardHeight
+
+                    if (mouseY >= clickableAreaYStart && mouseY <= clickableAreaYEnd &&
+                        mouseX >= intBoardX && mouseX <= intBoardX + (intColWidth * 7)) { // Check within board X bounds
+                        // Calculate column based on mouse X
+                        intCol = (mouseX - intBoardX) / intColWidth;
+                        clicked = true; // A valid click occurred, exit the inner loop
+                    } else {
+                        System.out.println("[DEBUG] Click outside valid board area: (" + mouseX + ", " + mouseY + ")");
+                    }
+                }
+                intMouseButtonLastFrame = intMouseButtonNow;
+
+                con.sleep(30); 
+            }
+            
             // Ensures the chosen column is within valid range
             if (intCol < 0 || intCol > 6) {
-                System.out.println("[DEBUG] Invalid column choice: " + (intCol + 1) + ". Please choose a column between 1 and 7.");
+                System.out.println("[DEBUG] Invalid column choice due to click location. Please try again.");
                 continue;
             }
 
             // Attempts to drop a piece into the chosen column
             boolean blnPlaced = dropPiece(intBoard, intCol, intCurrentPlayer);
             if (!blnPlaced) {
-                System.out.println("[DEBUG] Column " + (intCol + 1) + " is full. Player " + intCurrentPlayer + " must choose again."); // Corrected debug message to show 1-indexed column
+                System.out.println("[DEBUG] Column " + (intCol + 1) + " is full. Player " + intCurrentPlayer + " must choose again.");
                 continue;
             }
 
-            System.out.println("[DEBUG] Player " + intCurrentPlayer + " placed a disc in column " + (intCol + 1)); // Corrected debug message to show 1-indexed column
+            System.out.println("[DEBUG] Player " + intCurrentPlayer + " placed a disc in column " + (intCol + 1));
 
             // Checks if the current player has won after dropping the piece.
             if (checkWin(intBoard, intCurrentPlayer)) {
-                drawBoard(con, intBoard, strP1, strP2, intP1Wins, intP2Wins);
+                drawBoard(con, intBoard, strP1, strP2, intP1Wins, intP2Wins, (intCurrentPlayer == 1 ? strP1 : strP2), instruction);
                 con.setDrawColor(new Color(0, 0, 0, 100));
                 con.fillRect(0, 0, 1280, 600);
 
@@ -260,12 +314,14 @@ public class CPTJaden {
                 // Winner message
                 con.setDrawColor(Color.BLACK);
                 String strWinnerName = (intCurrentPlayer == 1) ? strP1 : strP2;
-                Font winningFont = con.loadFont("ArialNarrow7-9YJ9n.ttf", 36);
-                con.setDrawFont(winningFont);
+                con.setDrawFont(FONT_WINNING);
                 FontMetrics fm = con.getDrawFontMetrics();
                 int textWidth = fm.stringWidth(strWinnerName + " Wins!");
                 int centerX = (1280 - textWidth) / 2;
                 con.drawString(strWinnerName + " Wins!", centerX, 670);
+                
+                con.repaint();
+                con.sleep(2000);
                 return intCurrentPlayer;
             }
 
@@ -284,6 +340,7 @@ public class CPTJaden {
 
             // Switches to the other player for the next turn
             intCurrentPlayer = (intCurrentPlayer == 1) ? 2 : 1;
+            instruction = (intCurrentPlayer == 1 ? strP1 : strP2) + ", click a column to drop your piece.";
 
         }
     }
@@ -299,7 +356,7 @@ public class CPTJaden {
         return false;
     }
 
-    public static void drawBoard(Console con, int[][] intBoard, String strP1, String strP2, int intP1Wins, int intP2Wins) {
+    public static void drawBoard(Console con, int[][] intBoard, String strP1, String strP2, int intP1Wins, int intP2Wins, String currentPlayerName, String instructionText) {
         con.clear();
 
         // Defines colors for the background elements of the game board
@@ -314,10 +371,6 @@ public class CPTJaden {
         con.setDrawColor(Color.WHITE);
         printCentered(con, strGameTitle);
 
-        // Loads custom fonts for scores and player names
-        Font scoreFont = con.loadFont("ArialNarrow7-9YJ9n.ttf", 22);
-        Font nameFont = con.loadFont("ArialNarrow7-9YJ9n.ttf", 18);
-
         // Defines dimensions and positions for player scorecards
         int intboxX = 80;
         int intboxY = 250;
@@ -331,30 +384,30 @@ public class CPTJaden {
         con.fillRoundRect(intboxX, intboxY, intboxWidth, intboxHeight, 20, 20);
         con.setDrawColor(Color.BLACK);
         con.drawRoundRect(intboxX, intboxY, intboxWidth, intboxHeight, 20, 20);
-        con.setDrawFont(nameFont);
-        drawCenteredString(con, strP1.toUpperCase(), intboxX, intboxY, intboxWidth, intboxY + 30, nameFont, Color.BLACK);
-        con.setDrawFont(scoreFont);
-        drawCenteredString(con, String.valueOf(intP1Wins), intboxX, intboxY, intboxWidth, intboxY + 75, scoreFont, Color.BLACK);
+        con.setDrawFont(FONT_NAME);
+        drawCenteredString(con, strP1.toUpperCase(), intboxX, intboxY, intboxWidth, intboxY + 30, FONT_NAME, Color.BLACK);
+        con.setDrawFont(FONT_SCORE);
+        drawCenteredString(con, String.valueOf(intP1Wins), intboxX, intboxY, intboxWidth, intboxY + 75, FONT_SCORE, Color.BLACK);
 
         // Draws Player 2's scorecard
         con.setDrawColor(Color.WHITE);
         con.fillRoundRect(intboxX2, intboxY, intboxWidth, intboxHeight, 20, 20);
         con.setDrawColor(Color.BLACK);
         con.drawRoundRect(intboxX2, intboxY, intboxWidth, intboxHeight, 20, 20);
-        con.setDrawFont(nameFont);
-        drawCenteredString(con, strP2.toUpperCase(), intboxX2, intboxY, intboxWidth, intboxY + 30, nameFont, Color.BLACK);
-        con.setDrawFont(scoreFont);
-        drawCenteredString(con, String.valueOf(intP2Wins), intboxX2, intboxY, intboxWidth, intboxY + 75, scoreFont, Color.BLACK);
+        con.setDrawFont(FONT_NAME);
+        drawCenteredString(con, strP2.toUpperCase(), intboxX2, intboxY, intboxWidth, intboxY + 30, FONT_NAME, Color.BLACK);
+        con.setDrawFont(FONT_SCORE);
+        drawCenteredString(con, String.valueOf(intP2Wins), intboxX2, intboxY, intboxWidth, intboxY + 75, FONT_SCORE, Color.BLACK);
 
         con.println();
 
         // Defines dimensions for game board discs and spacing
         int intdiscSize = 60;
         int intgap = 10;
+        int intColWidth = intdiscSize + intgap;
 
         // Sets font for column numbers
-        Font numberFont = con.loadFont("ArialNarrow7-9YJ9n.ttf", 22);
-        con.setDrawFont(numberFont);
+        con.setDrawFont(FONT_NUMBER);
         FontMetrics fm = con.getDrawFontMetrics();
 
         // Defines the top-left corner and dimensions of the Connect 4 board drawing area
@@ -372,7 +425,7 @@ public class CPTJaden {
             String strcolNumber = String.valueOf(intCol + 1); // Column number as a string
             int inttextWidth = fm.stringWidth(strcolNumber); // Width of the column number string
             // Calculates the center X position for each column number
-            int intcenterX = 390 + intCol * (intdiscSize + intgap) + intdiscSize / 2;
+            int intcenterX = intBoardX + intCol * intColWidth + intdiscSize / 2;
             // Adjusts text X position for centering
             int inttextX = intcenterX + 6 - inttextWidth / 2;
             int inttextY = 90; // Y position for column numbers
@@ -399,6 +452,31 @@ public class CPTJaden {
                 con.fillOval(intX - 5, intY - 5, intdiscSize, intdiscSize);
             }
         }
+        // Draw the arrow indicating the hovered column
+        int mouseX = con.currentMouseX();
+        int mouseY = con.currentMouseY();
+
+        // Check if mouse is over the board area to display the arrow
+        if (mouseY >= 0 && mouseY < intBoardY + intBoardHeight && // Roughly above the board
+            mouseX >= intBoardX && mouseX <= intBoardX + intBoardWidth) {
+
+            // Calculate the hovered column
+            int hoveredCol = (mouseX - intBoardX) / intColWidth;
+            if (hoveredCol >= 0 && hoveredCol < 7) {
+                int arrowX = intBoardX + hoveredCol * intColWidth + (intColWidth / 2);
+                int arrowY = 70; // Position the arrow just above the column numbers
+
+                con.setDrawColor(Color.CYAN);
+                int[] arrowXPoints = {arrowX, arrowX - 10, arrowX + 10};
+                int[] arrowYPoints = {arrowY, arrowY + 20, arrowY + 20};
+                con.fillPolygon(arrowXPoints, arrowYPoints, 3);
+                
+			}
+		}
+		// Display instructions for the current player
+		con.setDrawColor(Color.BLACK);
+		con.setDrawFont(FONT_INSTRUCTION);
+		drawCenteredString(con, instructionText, 0, 620, 1280, 670, FONT_INSTRUCTION, Color.BLACK);
     }
 
     public static boolean checkWin(int[][] intBoard, int intPlayer) {
