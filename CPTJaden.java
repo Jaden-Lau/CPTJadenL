@@ -325,7 +325,6 @@ public class CPTJaden {
 		int intboxHeight = 120;
 		int intboxX2 = 1280 - intboxWidth - 80;
 
-
 		// Draws Player 1's scorecard
 		con.setDrawColor(Color.WHITE);
 		con.fillRoundRect(intboxX, intboxY, intboxWidth, intboxHeight, 20, 20);
