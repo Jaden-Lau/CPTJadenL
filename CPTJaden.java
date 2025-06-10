@@ -54,7 +54,7 @@ public class CPTJaden {
 
             // Draw the Connect 4 Logo, positioned to align with the rest of the main menu
             BufferedImage logo = con.loadImage("Connect 4 Logo.png");
-            int intlogoX = (con.getWidth() - logo.getWidth()) / 2; // Corrected to center the logo relative to console width
+            int intlogoX = (logo.getWidth()) / 2; // Corrected to center the logo relative to console width
             int intlogoY = 20;
             con.drawImage(logo, intlogoX, intlogoY);
 
@@ -325,17 +325,6 @@ public class CPTJaden {
         int intboxHeight = 120;
         int intboxX2 = 1280 - intboxWidth - 80;
 
-<<<<<<< HEAD
-		// Draws Player 1's scorecard
-		con.setDrawColor(Color.WHITE);
-		con.fillRoundRect(intboxX, intboxY, intboxWidth, intboxHeight, 20, 20);
-		con.setDrawColor(Color.BLACK);
-		con.drawRoundRect(intboxX, intboxY, intboxWidth, intboxHeight, 20, 20);
-		con.setDrawFont(nameFont);
-		drawCenteredString(con, strP1.toUpperCase(), intboxX, intboxY, intboxWidth, intboxY + 30, nameFont, Color.BLACK);
-		con.setDrawFont(scoreFont);
-		drawCenteredString(con, String.valueOf(intP1Wins), intboxX, intboxY, intboxWidth, intboxY + 75, scoreFont, Color.BLACK);
-=======
 
         // Draws Player 1's scorecard
         con.setDrawColor(Color.WHITE);
@@ -356,7 +345,6 @@ public class CPTJaden {
         drawCenteredString(con, strP2.toUpperCase(), intboxX2, intboxY, intboxWidth, intboxY + 30, nameFont, Color.BLACK);
         con.setDrawFont(scoreFont);
         drawCenteredString(con, String.valueOf(intP2Wins), intboxX2, intboxY, intboxWidth, intboxY + 75, scoreFont, Color.BLACK);
->>>>>>> 26f0c0b403dd3be570f46344e384ed87ea4de7a7
 
         con.println();
 
@@ -508,4 +496,121 @@ public class CPTJaden {
         con.println("------------");
         // Prints each leaderboard entry to the console
         for (int i = 0; i < intCount; i++) {
-            con.println((i + 1) + ". " + strLeaderboard
+            con.println((i + 1) + ". " + strLeaderboard[i][0] + " - " + strLeaderboard[i][1] + " wins");
+        }
+        con.println();
+        con.println("Press Enter to return to menu.");
+        con.readLine();
+    }
+    public static void createTheme(Console con) {
+        con.clear();
+        con.setBackgroundColor(new Color(112, 58, 255));
+        con.println("Create Your Own Theme");
+        con.println("---------------------------");
+
+        con.print("Enter Theme Name: ");
+        String strThemeName = con.readLine(); // Gets the theme name
+
+        // Gets RGB for Player 1
+        con.println("\nPlayer 1 Color:");
+        con.print("  R: ");
+        int intP1R = con.readInt();
+        con.print("  G: ");
+        int intP1G = con.readInt();
+        con.print("  B: ");
+        int intP1B = con.readInt();
+
+        // Gets RGB for Player 2
+        con.println("\nPlayer 2 Color:");
+        con.print("  R: ");
+        int intP2R = con.readInt();
+        con.print("  G: ");
+        int intP2G = con.readInt();
+        con.print("  B: ");
+        int intP2B = con.readInt();
+
+        // Gets RGB for Board Background
+        con.println("\nBoard Background Color:");
+        con.print("  R: ");
+        int intBoardR = con.readInt();
+        con.print("  G: ");
+        int intBoardG = con.readInt();
+        con.print("  B: ");
+        int intBoardB = con.readInt();
+
+        con.print("\nEnter Game Title: ");
+        String strGameTitle = con.readLine(); // Gets the game title
+
+        // Writes all the custom theme data to owntheme.txt
+        TextOutputFile own = new TextOutputFile("owntheme.txt");
+        own.println(strThemeName);
+        own.println(intP1R);
+        own.println(intP1G);
+        own.println(intP1B);
+        own.println(intP2R);
+        own.println(intP2G);
+        own.println(intP2B);
+        own.println(intBoardR);
+        own.println(intBoardG);
+        own.println(intBoardB);
+        own.println(strGameTitle);
+        own.close();
+        con.println("\nTheme saved successfully to 'owntheme.txt'!"); // Confirms that the theme is saved
+    }
+
+    public static void showSecretJoke(Console con) {
+        // Array of strings, each one is a programming joke
+        String[] arrJokes = {
+            "Why did the Java developer go broke? Because he used up all his cache!",
+            "Why do programmers prefer dark mode? Because light attracts bugs!",
+            "How many programmers does it take to change a light bulb? None, it's a hardware problem.",
+            "I would tell you a UDP joke, but you might not get it.",
+            "What's a Java developer’s favorite place to sit? The null pointer!"
+        };
+
+        Random rand = new Random();
+        int randomIndex = rand.nextInt(arrJokes.length); // generates a random index to select joke
+
+        con.clear();
+        con.setBackgroundColor(new Color(0, 0, 0)); // Sets a black background for the joke display
+
+        con.setDrawColor(new Color(0, 255, 0));
+        Font jokeFont = con.loadFont("ArialNarrow7-9YJ9n.ttf", 28);
+        con.setDrawFont(jokeFont);
+
+        FontMetrics fm = con.getDrawFontMetrics();
+        String strjoke = arrJokes[randomIndex];
+        int textWidth = fm.stringWidth(strjoke); // Measures the width of the joke text
+        int centerX = (1280 - textWidth) / 2; // Calculates X to center the text
+
+        con.drawString(strjoke, centerX, 360);
+
+        con.repaint(); // Ensures the screen is updated
+
+        con.sleep(4000); // Pauses for 4 seconds so the user can read the joke
+        con.setBackgroundColor(new Color(112, 58, 255));
+    }
+
+    public static void drawCenteredString(Console con, String strText, int intboxX, int intboxY, int intboxWidth, int intyPosition, Font font, Color color) {
+        con.setDrawFont(font);
+        FontMetrics fm = con.getDrawFontMetrics();
+        int inttextWidth = fm.stringWidth(strText);
+        // Calculates the X coordinate to center the text within the `intboxWidth`
+        int inttextX = intboxX + (intboxWidth - inttextWidth) / 2;
+        con.setDrawColor(color);
+        con.drawString(strText, inttextX, intyPosition); // Draw string
+    }
+
+    public static void printCentered(Console con, String strtext) {
+        int intconsoleWidth = 1280;
+        int intcharWidth = 12;
+        int inttextWidth = strtext.length() * intcharWidth;
+        // Calculates the number of spaces needed to center the text
+        int intspaces = (intconsoleWidth - inttextWidth) / (2 * intcharWidth);
+        // Prints the calculated number of spaces
+        for (int i = 0; i < intspaces; i++) {
+            con.print(" ");
+        }
+        con.print(strtext); // Prints the text
+    }
+}
