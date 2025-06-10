@@ -232,16 +232,23 @@ public class CPTJaden {
             con.println();
             con.print("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n" + (intCurrentPlayer == 1 ? strP1 : strP2) + ", choose column (1-7): ");
             int intCol = con.readInt() - 1;
-
+            
+            // IEnsures the chosen column is within valid range
             if (intCol < 0 || intCol > 6) {
+				System.out.println("[DEBUG] Invalid column choice: " + (intCol + 1) + ". Please choose a column between 1 and 7.");
                 continue;
             }
-
+            
+            // Attempts to drop a piece into the chosen column
             boolean blnPlaced = dropPiece(intBoard, intCol, intCurrentPlayer);
             if (!blnPlaced) {
+				System.out.println("[DEBUG] Column " + intCol + " is full. Player " + intCurrentPlayer + " must choose again.");
                 continue;
             }
-
+            
+            System.out.println("[DEBUG] Player " + intCurrentPlayer + " placed a disc in column " + intCol);
+            
+            // Checks if the current player has won after dropping the piece.
             if (checkWin(intBoard, intCurrentPlayer)) {
                 drawBoard(con, intBoard, strP1, strP2, intP1Wins, intP2Wins);
 				con.setDrawColor(new Color(0, 0, 0, 100));
@@ -262,6 +269,7 @@ public class CPTJaden {
 				return intCurrentPlayer;
 			}
 			
+			// Cheat code activation: If the current player's name matches and the cheat hasn't been used.
 			 if (intCurrentPlayer == 1 && blnP1Cheat && !blnP1UsedCheat) {
 				con.println("[CHEAT] Extra turn activated for " + strP1 + "!");
 				blnP1UsedCheat = true;
@@ -273,13 +281,15 @@ public class CPTJaden {
 				con.sleep(1000);
 				continue;
 			}
-
+			
+			// Switches to the other player for the next turn
             intCurrentPlayer = (intCurrentPlayer == 1) ? 2 : 1;
 
         }
     }
 
     public static boolean dropPiece(int[][] intBoard, int intCol, int intPlayer) {
+		// Iterates from the bottom row upwards
         for (int intRow = 5; intRow >= 0; intRow--) {
             if (intBoard[intRow][intCol] == 0) {
                 intBoard[intRow][intCol] = intPlayer;
@@ -291,6 +301,8 @@ public class CPTJaden {
 
     public static void drawBoard(Console con, int[][] intBoard, String strP1, String strP2, int intP1Wins, int intP2Wins) {
 		con.clear();
+		
+		// Defines colors for the background elements of the game board
         Color purple = new Color(112, 58, 255);
 		Color yellow = new Color(255, 214, 100);
 		con.setDrawColor(purple);
@@ -298,18 +310,23 @@ public class CPTJaden {
 		con.setDrawColor(yellow);
 		con.fillRect(0, 620, 1280, 100);
 		
+		// Draws the game title at the top, centered
 		con.setDrawColor(Color.WHITE);
 		printCentered(con, strGameTitle);
 		
+		// Loads custom fonts for scores and player names
 		Font scoreFont = con.loadFont("ArialNarrow7-9YJ9n.ttf", 22);
 		Font nameFont = con.loadFont("ArialNarrow7-9YJ9n.ttf", 18);
 		
+		// Defines dimensions and positions for player scorecards
 		int intboxX = 80;
 		int intboxY = 250;
 		int intboxWidth = 120;
 		int intboxHeight = 120;
 		int intboxX2 = 1280 - intboxWidth - 80;
 
+
+		// Draws Player 1's scorecard
 		con.setDrawColor(Color.WHITE);
 		con.fillRoundRect(intboxX, intboxY, intboxWidth, intboxHeight, 20, 20);
 		con.setDrawColor(Color.BLACK);
@@ -319,6 +336,7 @@ public class CPTJaden {
 		con.setDrawFont(scoreFont);
 		drawCenteredString(con, String.valueOf(intP1Wins), intboxX, intboxY, intboxWidth, intboxY + 75, scoreFont, Color.BLACK);
 
+		// Draws Player 2's scorecard
 		con.setDrawColor(Color.WHITE);
 		con.fillRoundRect(intboxX2, intboxY, intboxWidth, intboxHeight, 20, 20);
 		con.setDrawColor(Color.BLACK);
@@ -329,36 +347,47 @@ public class CPTJaden {
 		drawCenteredString(con, String.valueOf(intP2Wins), intboxX2, intboxY, intboxWidth, intboxY + 75, scoreFont, Color.BLACK);
 		
         con.println();
+        
+        // Defines dimensions for game board discs and spacing
 		int intdiscSize = 60;
 		int intgap = 10;
-
+		
+		// Sets font for column numbers
 		Font numberFont = con.loadFont("ArialNarrow7-9YJ9n.ttf", 22);
 		con.setDrawFont(numberFont);
 		FontMetrics fm = con.getDrawFontMetrics();
 		
+		// Defines the top-left corner and dimensions of the COnnect 4 board drawing area
         int intBoardX = 390;
 		int intBoardY = 120;    
 		int intBoardWidth = 490;
 		int intBoardHeight = 420;
-
+		
+		// Draws the main rectangular area of the Connect 4 board using the selected theme colour
 		con.setDrawColor(colBoardTheme);
 		con.fillRect(intBoardX, intBoardY, intBoardWidth, intBoardHeight);
-
+		
+		// Draws column numbers (1-7) above the board
 		for (int intCol = 0; intCol < 7; intCol++) {
-			String strcolNumber = String.valueOf(intCol + 1);
-			int inttextWidth = fm.stringWidth(strcolNumber);
+			String strcolNumber = String.valueOf(intCol + 1); // Column number as a string
+			int inttextWidth = fm.stringWidth(strcolNumber); // Width of the column number string
+			// Calculates the center X position for each column number
 			int intcenterX = 390 + intCol * (intdiscSize + intgap) + intdiscSize / 2;
+			// Adjusts text X position for centering
 			int inttextX = intcenterX+6 - inttextWidth / 2;
-			int inttextY = 90;
+			int inttextY = 90; // Y position for column numbers
 			con.setDrawColor(Color.WHITE);
 			con.drawString(strcolNumber, inttextX, inttextY);
 		}
-
+		
+		// Draw the discs on the board based on the intBoard array's state
 		for (int intRow = 0; intRow < 6; intRow++) {
 			for (int intCol = 0; intCol < 7; intCol++) {
+				// Calculates the X and Y coordinates for each disc
 				int intX = 400 + intCol * (intdiscSize + intgap);
 				int intY = 130 + intRow * (intdiscSize + intgap);
-
+				
+				// Sets the draw colour based on the disc's state
 				if (intBoard[intRow][intCol] == 0) {
 					con.setDrawColor(Color.WHITE);
 				} else if (intBoard[intRow][intCol] == 1) {
@@ -426,16 +455,19 @@ public class CPTJaden {
         return false;
     }
 	public static void viewLeaderboard(Console con, String strP1, int intP1Wins, String strP2, int intP2Wins) {
+		// Initializes a 2D array to store leaderboard entries
 		String[][] strLeaderboard = new String[100][2];
 		int intCount = 0;
-
+		
+		// Writes the current players' names and scores to leaderboard.txt
 		TextOutputFile leaderBoardOut = new TextOutputFile("leaderboard.txt");
 		leaderBoardOut.println(strP1);
 		leaderBoardOut.println(Integer.toString(intP1Wins));
 		leaderBoardOut.println(strP2);
 		leaderBoardOut.println(Integer.toString(intP2Wins));
 		leaderBoardOut.close();
-
+		
+		// Reads all entries from leaderboard.txt into the strLeaderboard array
 		TextInputFile leaderBoard = new TextInputFile("leaderboard.txt");
 		while (!leaderBoard.eof() && intCount < strLeaderboard.length) {
 			strLeaderboard[intCount][0] = leaderBoard.readLine();
@@ -444,10 +476,12 @@ public class CPTJaden {
 		}
 		leaderBoard.close();
 		
+		// Sorts the leaderboard in descending order based on win counts using a bubble sort algorithm
 		for (int i = 0; i < intCount - 1; i++) {
 			for (int j = 0; j < intCount - i - 1; j++) {
 				int intWins1 = Integer.parseInt(strLeaderboard[j][1]);
 				int intWins2 = Integer.parseInt(strLeaderboard[j + 1][1]);
+				// If the current player has fewer wins than the next, swap them
 				if (intWins1 < intWins2) {
 					String strTempName = strLeaderboard[j][0];
 					String strTempWins = strLeaderboard[j][1];
@@ -462,6 +496,7 @@ public class CPTJaden {
 		con.clear();
 		con.println("LEADERBOARD");
 		con.println("------------");
+		// Prints each leaderboard entry to the console
 		for (int i = 0; i < intCount; i++) {
 			con.println((i + 1) + ". " + strLeaderboard[i][0] + " - " + strLeaderboard[i][1] + " wins");
 		}
@@ -476,8 +511,9 @@ public class CPTJaden {
 		con.println("---------------------------");
 
 		con.print("Enter Theme Name: ");
-		String strThemeName = con.readLine();
-
+		String strThemeName = con.readLine(); // Gets the theme name
+		
+		// Gets RGB for Player 1
 		con.println("\nPlayer 1 Color:");
 		con.print("  R: ");
 		int intP1R = con.readInt();
@@ -485,7 +521,8 @@ public class CPTJaden {
 		int intP1G = con.readInt();
 		con.print("  B: ");
 		int intP1B = con.readInt();
-
+		
+		// Gets RGB for Player 2
 		con.println("\nPlayer 2 Color:");
 		con.print("  R: ");
 		int intP2R = con.readInt();
@@ -493,7 +530,8 @@ public class CPTJaden {
 		int intP2G = con.readInt();
 		con.print("  B: ");
 		int intP2B = con.readInt();
-
+		
+		// Gets RGB for Board Background
 		con.println("\nBoard Background Color:");
 		con.print("  R: ");
 		int intBoardR = con.readInt();
@@ -503,8 +541,9 @@ public class CPTJaden {
 		int intBoardB = con.readInt();
 
 		con.print("\nEnter Game Title: ");
-		String strGameTitle = con.readLine();
+		String strGameTitle = con.readLine(); // Gets the game title
 		
+		// Writes all the custom theme data to owntheme.txt
 		TextOutputFile own = new TextOutputFile("owntheme.txt");
 		own.println(strThemeName);
 		own.println(intP1R);
@@ -518,10 +557,11 @@ public class CPTJaden {
 		own.println(intBoardB);
 		own.println(strGameTitle);
 		own.close();
-		con.println("\nTheme saved successfully to 'owntheme.txt'!");
+		con.println("\nTheme saved successfully to 'owntheme.txt'!"); // Confirms that the theme is saved
 	}
 	
 	public static void showSecretJoke(Console con) {
+		// Array of strings, each one is a programming joke
 		String[] arrJokes = {
 			"Why did the Java developer go broke? Because he used up all his cache!",
 			"Why do programmers prefer dark mode? Because light attracts bugs!",
@@ -531,25 +571,25 @@ public class CPTJaden {
 		};
 
 		Random rand = new Random();
-		int randomIndex = rand.nextInt(arrJokes.length);
+		int randomIndex = rand.nextInt(arrJokes.length); // generates a random index to select joke
 
 		con.clear();
-		con.setBackgroundColor(new Color(0,0,0));
-
+		con.setBackgroundColor(new Color(0,0,0)); // Sets a black background for the joke display
+		
 		con.setDrawColor(new Color(0, 255, 0));
 		Font jokeFont = con.loadFont("ArialNarrow7-9YJ9n.ttf", 28);
 		con.setDrawFont(jokeFont);
 
 		FontMetrics fm = con.getDrawFontMetrics();
 		String strjoke = arrJokes[randomIndex];
-		int textWidth = fm.stringWidth(strjoke);
-		int centerX = (1280 - textWidth) / 2;
+		int textWidth = fm.stringWidth(strjoke); // Measures the width of the joke text
+		int centerX = (1280 - textWidth) / 2; // Calculates X to center the text
 
 		con.drawString(strjoke, centerX, 360);
 		
-		con.repaint();
+		con.repaint(); // Ensures the screen is updated
 
-		con.sleep(4000);
+		con.sleep(4000); // Pauses for 4 seconds so the user can read the joke
 		con.setBackgroundColor(new Color(112, 58, 255));
 	}
 
@@ -557,19 +597,23 @@ public class CPTJaden {
 		con.setDrawFont(font);
 		FontMetrics fm = con.getDrawFontMetrics();
 		int inttextWidth = fm.stringWidth(strText);
+        // Calculates the X coordinate to center the text within the `intboxWidth`
 		int inttextX = intboxX + (intboxWidth - inttextWidth) / 2;
 		con.setDrawColor(color);
-		con.drawString(strText, inttextX, intyPosition);
+		con.drawString(strText, inttextX, intyPosition); // Draw string
 	}
+	
 	public static void printCentered(Console con, String strtext) {
 		int intconsoleWidth = 1280;
 		int intcharWidth = 12;
 		int inttextWidth = strtext.length() * intcharWidth;
+		// Calculates the number of spaces needed to center the text
 		int intspaces = (intconsoleWidth - inttextWidth) / (2 * intcharWidth);
+		// Prints the calculated number of spaces
 		for (int i = 0; i < intspaces; i++) {
 			con.print(" ");
 		}
-		con.print(strtext);
+		con.print(strtext); // Prints the text
 	}
 	
 }
