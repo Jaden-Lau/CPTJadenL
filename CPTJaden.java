@@ -253,12 +253,12 @@ public class CPTJaden {
         drawBoard(con, intBoard, strP1, strP2, intP1Wins, intP2Wins, (intCurrentPlayer == 1 ? strP1 : strP2), instruction);
         // Will always run as long the main game function runs
         while (true) {
-            int intCol = -1;
-            boolean clicked = false;
-            int prevHoveredCol = -1;
-            
-            // This inner loop continuously runs, updating the game state and checking for player's mouse click to drop a piece
-            while (!clicked) {
+			int intCol = -1;
+			boolean clicked = false;
+			int prevHoveredCol = -1;
+			
+			// This inner loop continuously runs, updating the game state and checking for player's mouse click to drop a piece
+			while (!clicked) {
 				int mouseX = con.currentMouseX();
 				int mouseY = con.currentMouseY();
 				int hoveredCol = -1;
@@ -290,12 +290,6 @@ public class CPTJaden {
 				intMouseButtonLastFrame = intMouseButtonNow;
 				con.sleep(30);
 			}
-            
-            // Ensures the chosen column is within valid range
-            if (intCol < 0 || intCol > 6) {
-                System.out.println("[DEBUG] Invalid column choice due to click location. Please try again.");
-                continue;
-            }
 
             // Attempts to drop a piece into the chosen column
             boolean blnPlaced = dropPiece(intBoard, intCol, intCurrentPlayer);
