@@ -267,7 +267,6 @@ public class CPTJaden {
 				if (mouseY >= 0 && mouseY < 540 && mouseX >= intBoardX && mouseX <= intBoardX + intColWidth * 7) {
 					hoveredCol = (mouseX - intBoardX) / intColWidth;
 				}
-
 				if (hoveredCol != prevHoveredCol) {
 					// Redraw the entire game board, including the updated arrow position
 					drawBoard(con, intBoard, strP1, strP2, intP1Wins, intP2Wins, (intCurrentPlayer == 1 ? strP1 : strP2), instruction);
@@ -462,20 +461,16 @@ public class CPTJaden {
         int mouseY = con.currentMouseY();
 
         // Check if mouse is over the board area to display the arrow
-        if (mouseY >= 0 && mouseY < intBoardY + intBoardHeight && // Roughly above the board
-            mouseX >= intBoardX && mouseX <= intBoardX + intBoardWidth) {
-
-            // Calculate the hovered column
-            int hoveredCol = (mouseX - intBoardX) / intColWidth;
-            if (hoveredCol >= 0 && hoveredCol < 7) {
-                int arrowX = intBoardX + hoveredCol * intColWidth + (intColWidth / 2);
-                int arrowY = 70; // Position the arrow just above the column numbers
-
-                con.setDrawColor(Color.CYAN);
-                int[] arrowXPoints = {arrowX, arrowX - 10, arrowX + 10};
-                int[] arrowYPoints = {arrowY, arrowY + 20, arrowY + 20};
-                con.fillPolygon(arrowXPoints, arrowYPoints, 3);
-                
+        if (mouseY >= 0 && mouseY < intBoardY + intBoardHeight && mouseX >= intBoardX && mouseX <= intBoardX + intBoardWidth) {
+			// Calculate the hovered column
+			int hoveredCol = (mouseX - intBoardX) / intColWidth;
+			if (hoveredCol >= 0 && hoveredCol < 7) {
+				int arrowX = intBoardX + hoveredCol * intColWidth + (intColWidth / 2);
+				int arrowY = 70; // Position the arrow just above the column numbers
+				con.setDrawColor(Color.CYAN);
+				int[] arrowXPoints = {arrowX, arrowX - 10, arrowX + 10};
+				int[] arrowYPoints = {arrowY, arrowY + 20, arrowY + 20};
+				con.fillPolygon(arrowXPoints, arrowYPoints, 3); 
 			}
 		}
 		// Display instructions for the current player
