@@ -1,6 +1,6 @@
 // Name: Jaden Lau
 // Program Name: CPTJaden
-// Date Last Motified: 6/12/2025
+// Date Last Mortified: 6/12/2025
 // Version Number: 1.0
 
 import arc.*;
