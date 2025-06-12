@@ -1,5 +1,5 @@
 // Name: Jaden Lau
-// Program Name: CPTJaden
+// Program Name: CPTJaden - Connect 4
 // Date Last Mortified: 6/12/2025
 // Version Number: 1.0
 
