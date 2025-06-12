@@ -247,10 +247,10 @@ public class CPTJaden {
         int intMouseButtonLastFrame = 0; // To detect a distinct click
         
         // Prints instructions for the user to follow
-        String instruction = (intCurrentPlayer == 1 ? strP1 : strP2) + ", click a column to drop your piece.";
+        String strInstruction = (intCurrentPlayer == 1 ? strP1 : strP2) + ", click a column to drop your piece.";
         
         // Draw board once to display
-        drawBoard(con, intBoard, strP1, strP2, intP1Wins, intP2Wins, (intCurrentPlayer == 1 ? strP1 : strP2), instruction);
+        drawBoard(con, intBoard, strP1, strP2, intP1Wins, intP2Wins, (intCurrentPlayer == 1 ? strP1 : strP2), strInstruction);
         // Will always run as long the main game function runs
         while (true) {
 		int intCol = -1;
@@ -269,7 +269,7 @@ public class CPTJaden {
 			}
 			if (hoveredCol != prevHoveredCol) {
 				// Redraw the entire game board, including the updated arrow position
-				drawBoard(con, intBoard, strP1, strP2, intP1Wins, intP2Wins, (intCurrentPlayer == 1 ? strP1 : strP2), instruction);
+				drawBoard(con, intBoard, strP1, strP2, intP1Wins, intP2Wins, (intCurrentPlayer == 1 ? strP1 : strP2), strInstruction);
 				con.repaint();
 				prevHoveredCol = hoveredCol;
 			}
@@ -302,7 +302,7 @@ public class CPTJaden {
 
             // Checks if the current player has won after dropping the piece.
             if (checkWin(intBoard, intCurrentPlayer)) {
-                drawBoard(con, intBoard, strP1, strP2, intP1Wins, intP2Wins, (intCurrentPlayer == 1 ? strP1 : strP2), instruction);
+                drawBoard(con, intBoard, strP1, strP2, intP1Wins, intP2Wins, (intCurrentPlayer == 1 ? strP1 : strP2), strInstruction);
                 con.setDrawColor(new Color(0, 0, 0, 100));
                 con.fillRect(0, 0, 1280, 600);
 
@@ -338,7 +338,7 @@ public class CPTJaden {
 
             // Switches to the other player for the next turn
             intCurrentPlayer = (intCurrentPlayer == 1) ? 2 : 1;
-            instruction = (intCurrentPlayer == 1 ? strP1 : strP2) + ", click a column to drop your piece.";
+            strInstruction = (intCurrentPlayer == 1 ? strP1 : strP2) + ", click a column to drop your piece.";
 
         }
     }
