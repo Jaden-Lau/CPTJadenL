@@ -530,7 +530,7 @@ public class CPTJaden {
         int intCount = 0;
 
         // Writes the current players' names and scores to leaderboard.txt
-        TextOutputFile leaderBoardOut = new TextOutputFile("leaderboard.txt");
+        TextOutputFile leaderBoardOut = new TextOutputFile("leaderboard.txt", true);
         leaderBoardOut.println(strP1);
         leaderBoardOut.println(Integer.toString(intP1Wins));
         leaderBoardOut.println(strP2);
